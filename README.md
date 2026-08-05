@@ -41,6 +41,11 @@ is what orders the suggestions.
 
 Four steps. Only the first can involve a model.
 
+**0. Scan report.** Settings > Scan report dumps exactly what the plugin read
+off the frame: how each layer was classified, its size, sibling count, sub-part
+count, whether an SVG came back, and which flags fired. When a recommendation
+looks wrong, this is the evidence to fix it with rather than guessing.
+
 **1. Which moment is this?**
 Points accumulate per stage from the frame name and its layers. A name match is
 4 points, strong content evidence 3–4, weaker evidence 2. Highest wins, and it
@@ -131,8 +136,31 @@ actually on the frame rather than by the stage.
 
 ## Icons
 
-Icons work differently, because an icon's motion depends on what it depicts and
-that cannot be read from its size.
+Icons work differently, and the verb library in `src/data/verbs.js` was measured
+from the animated icons that already exist in the Qi library — the heart, the
+watch, the target, the coin box, the confetti, the success check and the search
+icon. Nothing in it is invented.
+
+Two things those icons establish that layout motion does not:
+
+**Icon motion is compound.** The success check pops a circle, *then* trims a path
+inside it. The watch trims three rings 240ms apart. The target pops five parts in
+sequence. A single unbroken movement is the exception.
+
+**Icon motion loops.** Every one runs a 2200ms cycle with the gesture in the
+first half and the rest held still. That hold is what stops a loop reading as
+frantic.
+
+The measured values, which are larger than layout motion:
+
+| | Layout | Icons |
+|---|---|---|
+| Overshoot | 1.04 | 1.12 to 1.4 |
+| Stagger | 60ms (`stagger-tight`) | 220ms (`stagger-parts`) |
+| Easing | `ease-out`, `ease-settle` | `ease-pop`, `ease-trim`, `ease-beat`, `ease-arrive`, `ease-expo` |
+
+`Lift` and `Emit` are marked `onlyIn: ["reward"]`. They are the loudest gestures
+in the library and belong to reward journeys, never a claim or a policy.
 
 **If it is in the Qi animated library**, the plugin says so and offers to insert
 the component. It carries its own motion, so it stays in step if the library
@@ -208,8 +236,11 @@ is missing something instead.
 - **Motion API is in beta** and subject to change. If it moves, `keyframesFor`
   in `engine.js` and `applyMotion` in `code.js` are the two places to fix.
 - **Icon library keys are placeholders.** Replace before anyone relies on them.
-- **Swap needs a second-icon picker.** The verb exists and is documented, but
-  nothing lets a designer point at the icon being swapped to, so it never fires.
+- **Icon sub-part mapping is by layer order.** A compound verb assigns its
+  tracks to the icon's children in order. That matches how the library icons are
+  built, but a differently ordered icon will get them the wrong way round.
+- **Journey kind is not set anywhere yet.** `window.JOURNEY_KIND` gates the
+  reward-only verbs; until something sets it, Lift and Emit never appear.
 - **The calibration constants are provisional.** `VOL_FLOOR` and `VOL_SPAN` in
   `engine.js` map the curve onto the volume range, and the diagnosis weights
   were tuned against a handful of frames. The architecture is settled; the

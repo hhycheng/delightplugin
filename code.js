@@ -7,11 +7,34 @@ var muteSelection = false;
 
 // ------------------------------------------------------------ read a frame
 
+/* Is this an icon? Real files name icons things like "Property 1=Default",
+   so the name is unreliable. Geometry is not: an icon is small, roughly
+   square, and contains only vectors. That catches most of them without
+   depending on anyone's naming conventions. */
+function looksLikeIcon(node) {
+  var w = "width" in node ? node.width : 0;
+  var h = "height" in node ? node.height : 0;
+  if (!w || !h) return false;
+  if (w > 96 || h > 96) return false;                 // too big to be an icon
+  var ratio = w / h;
+  if (ratio < 0.6 || ratio > 1.7) return false;       // not roughly square
+  if (node.type === "VECTOR" || node.type === "BOOLEAN_OPERATION") return true;
+  if (!("children" in node) || !node.children.length) return false;
+  var vectors = 0, other = 0;
+  node.children.forEach(function (c) {
+    if (c.type === "VECTOR" || c.type === "BOOLEAN_OPERATION" ||
+        c.type === "ELLIPSE" || c.type === "RECTANGLE" || c.type === "LINE" ||
+        c.type === "STAR" || c.type === "POLYGON" || c.type === "GROUP") vectors++;
+    else other++;
+  });
+  return vectors > 0 && other === 0;
+}
+
 function classify(node) {
   var n = node.name.toLowerCase();
   if (/button|cta|btn|submit|confirm|next|book now|done/.test(n)) return "button";
   if (node.type === "TEXT") return "text";
-  if (node.type === "VECTOR" || node.type === "BOOLEAN_OPERATION") return "icon";
+  if (looksLikeIcon(node)) return "icon";
   if (/icon|ic-|check|tick|spinner|loader|star|sparkle|lock|shield|bell/.test(n)) return "icon";
   if (/image|photo|avatar|thumbnail|map|banner/.test(n)) return "image";
   if (/row|item|cell|list item|card/.test(n)) return "row";
@@ -35,6 +58,15 @@ function flagsFor(node, type) {
     late:      /follow|feedback|next step|helpful|rate|track/.test(n),
     secondState: false      // set when the designer picks a second icon
   };
+}
+
+/* How many shape children does this node have? The compound verbs need at
+   least two, so this is what `needs: "second-part"` is checked against. */
+function partCount(node) {
+  if (!("children" in node)) return 0;
+  return node.children.filter(function (c) {
+    return c.visible !== false && c.type !== "TEXT";
+  }).length;
 }
 
 // Icons get their geometry exported so the panel can preview the real thing,
@@ -88,6 +120,37 @@ function easingFor(spec) {
 
 /* The Motion API is in beta. If anything here is unavailable, fall back to
    writing the spec as a text annotation so the designer still gets the values. */
+/* A verb is a sequence of tracks on sub-parts, so it writes several. */
+async function applyCompound(node, kf) {
+  var kids = ("children" in node)
+    ? node.children.filter(function (c) { return c.visible !== false; })
+    : [];
+  for (var i = 0; i < kf.tracks.length; i++) {
+    var t = kf.tracks[i];
+    /* Map each track onto a sub-part where there is one, otherwise the icon
+       itself. Order follows the layer order, which is how the library icons
+       are built. */
+    var target = (kids.length > i && t.part !== "whole") ? kids[i] : node;
+    target.applyManualKeyframeTrack(
+      { type: "PROPERTY", name: t.track },
+      {
+        baseValue: { type: "FLOAT", value: t.keyframes[0].value },
+        keyframes: t.keyframes.map(function (f) {
+          var o = { timelinePosition: f.timelinePosition,
+                    value: { type: "FLOAT", value: f.value } };
+          if (f.easing) o.easing = easingFor(f.easing);
+          return o;
+        })
+      }
+    );
+  }
+  var timelines = node.timelines;
+  if (timelines && timelines[0]) {
+    node.setTimelineDuration(timelines[0].id, Math.max(1, kf.durationSeconds));
+  }
+  return 1;
+}
+
 async function applyMotion(job) {
   var targets = [];
   for (var i = 0; i < job.nodeIds.length; i++) {
@@ -97,6 +160,7 @@ async function applyMotion(job) {
   if (!targets.length) throw new Error("that layer is no longer in the file");
 
   var k = job.kf;
+  if (k.compound) return await applyCompound(targets[0], k);
   for (var j = 0; j < targets.length; j++) {
     var node = targets[j];
     var offset = (k.stagger || 0) * j;
@@ -258,6 +322,31 @@ figma.ui.onmessage = async function (msg) {
     if (n) { muteSelection = true; figma.currentPage.selection = [n];
       figma.viewport.scrollAndZoomIntoView([n]);
       setTimeout(function () { muteSelection = false; }, 400); }
+  }
+
+  if (msg.type === "scan-report") {
+    var sel = figma.currentPage.selection.filter(function (n) {
+      return n.type === "FRAME" || n.type === "COMPONENT" || n.type === "INSTANCE";
+    });
+    if (!sel.length) { figma.ui.postMessage({ type: "scan-report", text: "Nothing selected." }); return; }
+    var f = await readFrame(sel[0]);
+    var lines = [];
+    lines.push("FRAME  " + f.name + "   " + f.w + "x" + f.h);
+    lines.push("");
+    lines.push("read as".padEnd(11) + "layer name".padEnd(30) + "size".padEnd(11)
+      + "sib".padEnd(5) + "parts".padEnd(7) + "svg".padEnd(6) + "flags");
+    f.els.forEach(function (e) {
+      var fl = Object.keys(e.f).filter(function (k) { return e.f[k]; }).join(" ");
+      lines.push(
+        e.t.padEnd(11) +
+        e.n.slice(0, 28).padEnd(30) +
+        (e.w + "x" + e.h).padEnd(11) +
+        String(e.sib).padEnd(5) +
+        String(e.parts).padEnd(7) +
+        (e.svg ? "yes" : "no").padEnd(6) +
+        fl);
+    });
+    figma.ui.postMessage({ type: "scan-report", text: lines.join("\n") });
   }
 
   if (msg.type === "close") figma.closePlugin();

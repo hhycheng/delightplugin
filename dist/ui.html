@@ -163,16 +163,20 @@ body{margin:0;background:var(--panel);font-family:var(--font);color:var(--ink);
   <div class="foot" id="foot"></div>
 
 <script>
-/* tokens.js — Qi motion tokens. Change a value here and every pattern
+/* tokens.js — Qi motion tokens, plus the easing curves measured from the
+   animated icons in the Qi library. Change a value here and every pattern
    and verb that uses it picks it up. Do not edit anything outside src/data. */
 
 window.DUR = {
-  "stagger-tight":      { ms:60,  u:"Sibling offset only, never across a vertical hierarchy." },
+  "stagger-tight":      { ms:60,  u:"Sibling offset in a layout. Rows, chips, cards." },
+  "stagger-parts":      { ms:220, u:"Sub-part offset inside one icon. Measured from the watch rings and the target." },
   "duration-instant":   { ms:100, u:"Anything finger-caused. Micro-feedback such as a button press." },
   "duration-fast":      { ms:200, u:"Small elements. Chips, row entrances, icon swaps." },
   "duration-moderate":  { ms:300, u:"Larger surfaces, roughly half the phone width or a third of its height and up." },
   "duration-slow":      { ms:500, u:"A single element carrying a stage on its own, where slowness reads as composure." },
-  "duration-deliberate":{ ms:700, u:"Unused so far. Guidelines will come as more journeys are delighted." }
+  "duration-deliberate":{ ms:700, u:"Unused so far. Guidelines will come as more journeys are delighted." },
+  "duration-icon":      { ms:800, u:"An icon completing its full gesture. Measured from the success check." },
+  "duration-loop":      { ms:2200,u:"One cycle of a continuous icon. Every animated icon in the library uses this." }
 };
 
 window.EAS = {
@@ -180,10 +184,16 @@ window.EAS = {
   "ease-in":     { c:"cubic-bezier(.42,0,1,1)",   d:"Exits. Accelerates away." },
   "ease-in-out": { c:"cubic-bezier(.42,0,.58,1)", d:"Motion that both starts and ends on screen." },
   "linear":      { c:"cubic-bezier(0,0,1,1)",     d:"Non-physical motion only. Nothing with mass moves at a constant speed." },
-  "ease-settle": { c:"cubic-bezier(.34,1.4,.64,1)",
-                   d:"Arrival. Something coming to rest after being placed." }
+  "ease-settle": { c:"cubic-bezier(.34,1.4,.64,1)", d:"Arrival. Something coming to rest after being placed." },
+
+  /* Measured from the animated icons. These are the curves the library
+     already uses, so an icon built with them matches what exists. */
+  "ease-arrive": { c:"cubic-bezier(.34,1.3,.64,1)",  d:"Gentle overshoot. The gift box lid and the main coin." },
+  "ease-pop":    { c:"cubic-bezier(.4,1.75,.3,1)",   d:"Strong overshoot. The success circle scaling from nothing." },
+  "ease-trim":   { c:"cubic-bezier(.45,1.45,.8,1)",  d:"Path drawing. The success check stroking on." },
+  "ease-beat":   { c:"cubic-bezier(.5,0,.5,1)",      d:"Symmetrical. Both halves of a heartbeat." },
+  "ease-expo":   { c:"cubic-bezier(.22,1,.36,1)",    d:"Fast out, long tail. Particles leaving and settling." }
 };
-function tokVal(t){ return DUR[t] ? DUR[t].ms + "ms" : EAS[t] ? EAS[t].c : ""; }
 
 </script>
 <script>
@@ -331,83 +341,181 @@ window.PAT = {
 </script>
 <script>
 /* verbs.js — motion for icons.
-   An icon's motion depends on what it depicts, which cannot be read from
-   its size. These are the whole vocabulary. A model may pick one and name
-   the sub-part it applies to. It never picks a duration, easing or token.
+   Every verb here was measured from an animated icon that already exists in
+   the Qi library. The values are not invented: they are what the heart, the
+   watch, the target, the coin box, the confetti, the check and the search
+   icon actually do.
 
-   track = the Figma Motion property track for applyManualKeyframeTrack.
-   needs = validated against the exported SVG before anything is shown:
-           "stroke"        the icon must have a stroked path
-           "second-state"  a second icon must be picked to swap to
-           "in-progress"   the moment must actually be loading */
+   Two things these icons establish that layout motion does not:
+
+   1. Icon motion is COMPOUND. The success check pops a circle, then trims a
+      path inside it. The watch trims three rings in sequence. A single
+      unbroken movement is the exception, not the rule.
+   2. Icon motion LOOPS. Every one runs on a 2200ms cycle with the gesture in
+      the first half and the rest held still. That hold is what stops a loop
+      reading as frantic.
+
+   Fields:
+     parts   the sequence. Each entry is one sub-part doing one thing.
+     track   the Figma Motion property track for applyManualKeyframeTrack
+     at      when this part starts, in ms from the top of the cycle
+     ms      how long this part takes
+     from/to the values, as they appear in the real icon
+     needs   validated against the exported SVG before anything is shown
+     loops   true if the gesture repeats on duration-loop
+     seenIn  which library icon this was measured from */
 
 window.VERBS = {
-  "fade":   { name:"Fade", purpose:"enter & exit", track:"OPACITY",
-    plain:"Fades from 0 to 100% with no movement.",
-    tokens:["duration-fast","ease-in-out"], ms:200, e:"ease-in-out",
-    v:{a:1,d:2,c:2,o:1}, needs:null, cont:false,
-    never:"", tests:{ nat:"", fun:"", exp:"For an icon that supports rather than announces." } },
 
-  "drift":  { name:"Drift In", purpose:"enter & exit", track:"TRANSLATION_Y",
-    plain:"Enters 8px from one edge and fades in.",
-    tokens:["duration-fast","ease-out"], ms:200, e:"ease-out",
-    v:{a:2,d:2,c:2,o:1}, needs:null, cont:false,
-    never:"One direction only. Do not combine with a rotation.",
-    tests:{ nat:"", fun:"The direction can carry meaning: down from a header, up from a form.", exp:"" } },
+  "beat": {
+    name: "Beat", purpose: "floating objects", seenIn: "Heart",
+    plain: "Two pulses, a strong one then a softer one, like a heartbeat.",
+    tokens: ["duration-loop", "ease-beat"], loops: true, ms: 550, e: "ease-beat",
+    parts: [
+      { part: "whole", track: "SCALE", at: 0,   ms: 120, from: 1,    to: 1.22 },
+      { part: "whole", track: "SCALE", at: 120, ms: 130, from: 1.22, to: 1 },
+      { part: "whole", track: "SCALE", at: 250, ms: 110, from: 1,    to: 1.15 },
+      { part: "whole", track: "SCALE", at: 360, ms: 190, from: 1.15, to: 1 }
+    ],
+    v: { a:2, d:2, c:2, o:1 }, needs: null,
+    never: "Two beats, then hold. A continuous throb reads as an alarm.",
+    tests: { nat: "Two beats of different strength is how a heart actually moves. One even pulse is not.",
+             fun: "Marks something as live without moving it out of place.",
+             exp: "Right for health and wellness. Too literal anywhere else." } },
 
-  "draw":   { name:"Draw", purpose:"masking", track:"PATH_LENGTH",
-    plain:"The path draws itself from 0 to 100% of its length.",
-    tokens:["duration-moderate","ease-out"], ms:300, e:"ease-out",
-    v:{a:2,d:3,c:2,o:1}, needs:"stroke", cont:false,
-    never:"Only on a stroked path. A filled shape has nothing to draw.",
-    tests:{ nat:"Drawing follows the shape, so it reads as being made rather than switched on.",
-            fun:"Takes just long enough to be noticed at the moment something completes.", exp:"" } },
+  "trim": {
+    name: "Trim", purpose: "masking", seenIn: "Success check, Smart watch",
+    plain: "The stroke draws itself from nothing to its full length.",
+    tokens: ["duration-icon", "ease-trim"], loops: false, ms: 600, e: "ease-trim",
+    parts: [
+      { part: "path", track: "PATH_LENGTH", at: 0, ms: 600, from: 0, to: 1 }
+    ],
+    v: { a:2, d:3, c:2, o:1 }, needs: "stroke",
+    never: "Only on a stroked path. A filled shape has nothing to draw.",
+    tests: { nat: "Drawing follows the shape, so it reads as being made rather than switched on.",
+             fun: "Takes long enough to be noticed at the moment something completes.", exp: "" } },
 
-  "reveal": { name:"Reveal", purpose:"masking", track:"MASK_POSITION",
-    plain:"A mask wipes across it, uncovering it in one direction.",
-    tokens:["duration-moderate","ease-out"], ms:300, e:"ease-out",
-    v:{a:2,d:3,c:2,o:1}, needs:null, cont:false,
-    never:"One direction, one pass. Never a wipe back and forth.",
-    tests:{ nat:"", fun:"Works on filled icons where Draw cannot, because there is no stroke to follow.", exp:"" } },
+  "trim-sequence": {
+    name: "Trim In Sequence", purpose: "masking", seenIn: "Smart watch rings",
+    plain: "Several strokes draw one after another, 240ms apart.",
+    tokens: ["duration-icon", "ease-trim", "stagger-parts"], loops: true, ms: 900, e: "ease-trim", st: 240,
+    parts: [
+      { part: "path 1", track: "PATH_LENGTH", at: 0,   ms: 900, from: 0, to: 1 },
+      { part: "path 2", track: "PATH_LENGTH", at: 240, ms: 900, from: 0, to: 1 },
+      { part: "path 3", track: "PATH_LENGTH", at: 480, ms: 900, from: 0, to: 1 }
+    ],
+    v: { a:2, d:3, c:2, o:3 }, needs: ["stroke","second-part"],
+    never: "The offset between strokes stays even. Uneven spacing reads as a stutter.",
+    tests: { nat: "", fun: "Sequence makes several readings legible as separate values rather than one graphic.",
+             exp: "The offset is what gives it life. Simultaneous would read as a static chart." } },
 
-  "swap":   { name:"Swap", purpose:"container transform", track:"OPACITY",
-    plain:"One icon becomes another, staying in place the whole way.",
-    tokens:["duration-fast","ease-in-out"], ms:200, e:"ease-in-out",
-    v:{a:2,d:2,c:2,o:2}, needs:"second-state", cont:false,
-    never:"Never fade out to nothing and fade in. The two states overlap.",
-    tests:{ nat:"", fun:"Keeps object permanence, so people read it as the same thing changing state.", exp:"" } },
+  "pop": {
+    name: "Pop In", purpose: "feedback", seenIn: "Success check circle, Coin",
+    plain: "Scales up from nothing, overshoots well past full size, then settles.",
+    tokens: ["duration-icon", "ease-pop"], loops: false, ms: 800, e: "ease-pop",
+    parts: [
+      { part: "whole", track: "SCALE", at: 0, ms: 800, from: 0, to: 1 }
+    ],
+    v: { a:3, d:3, c:3, o:1 }, needs: null,
+    never: "Once per journey. It is the loudest thing a single icon can do.",
+    tests: { nat: "An object arriving with real momentum and being absorbed.",
+             fun: "", exp: "The fullest expression available to one icon." } },
 
-  "rotate": { name:"Rotate", purpose:"feedback", track:"ROTATION",
-    plain:"Rotates into position and settles at rest.",
-    tokens:["duration-moderate","ease-settle"], ms:300, e:"ease-settle",
-    v:{a:2,d:3,c:3,o:1}, needs:null, cont:false,
-    never:"One rotation only. A full turn reads as loading, not as arrival.",
-    tests:{ nat:"The overshoot reads as momentum being absorbed, not as a bounce.",
-            fun:"", exp:"Carries more personality than a fade without becoming playful." } },
+  "pop-then-trim": {
+    name: "Pop Then Trim", purpose: "feedback", seenIn: "Success check",
+    plain: "The container pops in, then the mark inside draws itself on.",
+    tokens: ["duration-icon", "ease-pop", "ease-trim"], loops: false, ms: 1000, e: "ease-pop",
+    parts: [
+      { part: "container", track: "SCALE",       at: 0,   ms: 800, from: 0, to: 1, e: "ease-pop" },
+      { part: "mark",      track: "PATH_LENGTH", at: 400, ms: 600, from: 0, to: 1, e: "ease-trim" }
+    ],
+    v: { a:3, d:3, c:3, o:2 }, needs: ["stroke","second-part"],
+    never: "The mark starts before the container has settled. Waiting for it reads as hesitation.",
+    tests: { nat: "The container arrives and the mark is written into it, in the order it would happen.",
+             fun: "The overlap keeps it one gesture rather than two.",
+             exp: "The strongest confirmation in the library. Confirm stages only." } },
 
-  "pop":    { name:"Pop", purpose:"feedback", track:"SCALE",
-    plain:"Scales up past full size, then eases back to 100%.",
-    tokens:["duration-moderate","ease-settle"], ms:300, e:"ease-settle",
-    v:{a:3,d:3,c:3,o:1}, needs:null, cont:false,
-    never:"Once per journey. It is the loudest thing an icon can do.",
-    tests:{ nat:"An object arriving and coming to rest, the way something set down behaves.",
-            fun:"", exp:"The fullest expression available to a single icon." } },
+  "pop-sequence": {
+    name: "Pop In Sequence", purpose: "feedback", seenIn: "Target",
+    plain: "Sub-parts pop in one after another, from the outside in.",
+    tokens: ["duration-fast", "ease-arrive", "stagger-parts"], loops: true, ms: 200, e: "ease-arrive", st: 220,
+    parts: [
+      { part: "part 1", track: "SCALE", at: 0,   ms: 200, from: 1, to: 1.12 },
+      { part: "part 2", track: "SCALE", at: 220, ms: 200, from: 1, to: 1.12 },
+      { part: "part 3", track: "SCALE", at: 440, ms: 200, from: 1, to: 1.12 }
+    ],
+    v: { a:2, d:2, c:3, o:3 }, needs: "second-part",
+    never: "Keep the order meaningful. Outside in, or bottom up. Random order reads as noise.",
+    tests: { nat: "Each part answering in turn reads as one thing settling, not several things twitching.",
+             fun: "The order can carry meaning: outside in draws the eye to the centre.", exp: "" } },
 
-  "sheen":  { name:"Sheen", purpose:"loading", track:"MASK_POSITION",
-    plain:"A soft highlight sweeps across it and repeats every 2200ms.",
-    tokens:["linear"], ms:2200, e:"linear",
-    v:{a:2,d:2,c:1,o:1}, needs:"in-progress", cont:true,
-    never:"Never fake progress. It shows something is live, not how far along it is.",
-    tests:{ nat:"Linear only. Nothing with mass moves at a constant speed.",
-            fun:"Shows what is live now, without claiming to know how long is left.", exp:"" } },
+  "lift": {
+    name: "Lift", purpose: "transformation", seenIn: "Gift box lid, Trumpet",
+    plain: "Rises and tips slightly while scaling up, then comes back to rest.",
+    tokens: ["duration-icon", "ease-arrive"], loops: true, ms: 450, e: "ease-arrive",
+    parts: [
+      { part: "lid", track: "TRANSLATION_Y", at: 0,   ms: 300, from: 0,    to: -9 },
+      { part: "lid", track: "ROTATION",      at: 0,   ms: 300, from: -15,  to: 9 },
+      { part: "lid", track: "SCALE",         at: 0,   ms: 300, from: 0.85, to: 1.06 },
+      { part: "lid", track: "TRANSLATION_Y", at: 300, ms: 150, from: -9,   to: 0 }
+    ],
+    v: { a:3, d:3, c:3, o:2 }, needs: "second-part", onlyIn: ["reward"],
+    never: "The lid comes back down. One that stays open is a state, not a gesture.",
+    tests: { nat: "Something being opened: it lifts, tips, and falls back.",
+             fun: "", exp: "Reserved for reward moments. Too playful for a claim." } },
 
-  "pulse":  { name:"Pulse", purpose:"floating objects", track:"SCALE",
-    plain:"Scales gently between 100% and 104% and back, repeating.",
-    tokens:["linear"], ms:2200, e:"linear",
-    v:{a:1,d:2,c:1,o:1}, needs:"in-progress", cont:true,
-    never:"Keep the cycle slow. Fast reads as an alarm.",
-    tests:{ nat:"", fun:"Marks something as live without moving it out of place.",
-            exp:"Quieter than a sheen. Right for health and wellness contexts." } }
+  "emit": {
+    name: "Emit", purpose: "cloning", seenIn: "Coin burst, Confetti",
+    plain: "Small pieces travel out along curved paths, scaling up then fading as they go.",
+    tokens: ["duration-loop", "ease-expo", "stagger-parts"], loops: true, ms: 1200, e: "ease-expo", st: 90,
+    parts: [
+      { part: "piece", track: "SCALE",   at: 0,   ms: 300, from: 0,    to: 1.15 },
+      { part: "piece", track: "OPACITY", at: 50,  ms: 100, from: 0,    to: 1 },
+      { part: "piece", track: "SCALE",   at: 300, ms: 900, from: 1.15, to: 0.6 },
+      { part: "piece", track: "OPACITY", at: 700, ms: 500, from: 1,    to: 0 }
+    ],
+    v: { a:3, d:3, c:2, o:3 }, needs: "second-part", onlyIn: ["reward"],
+    never: "Pieces fade before they leave the frame. Anything reaching the edge reads as debris.",
+    tests: { nat: "Each piece scales up as it starts and shrinks as it goes, the way something thrown recedes.",
+             fun: "", exp: "The loudest thing in the library. Rewards only, never a claim or a policy." } },
+
+  "orbit": {
+    name: "Orbit", purpose: "floating objects", seenIn: "Search",
+    plain: "Drifts in a small continuous circle, never stopping.",
+    tokens: ["duration-loop", "linear"], loops: true, ms: 2200, e: "linear",
+    parts: [
+      { part: "whole", track: "TRANSLATION_X", at: 0, ms: 2200, from: -4, to: 4 },
+      { part: "whole", track: "TRANSLATION_Y", at: 0, ms: 2200, from: -4, to: 4 }
+    ],
+    v: { a:1, d:2, c:1, o:1 }, needs: null,
+    never: "Never faster than one turn per 2200ms. Faster reads as searching in a panic.",
+    tests: { nat: "Linear only. A constant speed reads as non-physical, which is correct for a hint.",
+             fun: "Shows something is looking, without claiming to know how long it will take.",
+             exp: "The quietest continuous motion in the library." } },
+
+  "settle": {
+    name: "Settle", purpose: "feedback", seenIn: "Main coin, Trumpet",
+    plain: "Scales up slightly past full size, then eases back.",
+    tokens: ["duration-moderate", "ease-arrive"], loops: false, ms: 350, e: "ease-arrive",
+    parts: [
+      { part: "whole", track: "SCALE", at: 0, ms: 350, from: 0.92, to: 1 }
+    ],
+    v: { a:2, d:3, c:3, o:1 }, needs: null,
+    never: "One overshoot only. A second bounce reads as a wobble.",
+    tests: { nat: "Mimics a physical object coming to rest after being placed.",
+             fun: "Confirms something worked at the exact moment of doubt.",
+             exp: "Reassurance, not celebration." } },
+
+  "fade": {
+    name: "Fade", purpose: "enter & exit", seenIn: "",
+    plain: "Fades from nothing to full, with no movement or scale.",
+    tokens: ["duration-fast", "ease-in-out"], loops: false, ms: 200, e: "ease-in-out",
+    parts: [
+      { part: "whole", track: "OPACITY", at: 0, ms: 200, from: 0, to: 1 }
+    ],
+    v: { a:1, d:2, c:2, o:1 }, needs: null,
+    never: "",
+    tests: { nat: "", fun: "", exp: "For an icon that supports rather than announces." } }
 };
 
 </script>
@@ -540,7 +648,7 @@ function heights(){
    Volume runs 4 to 13. The constants below map the curve onto the range
    the pattern library actually occupies: quietest pattern 5, loudest 10.
    If you add patterns outside that range, retune these two numbers. */
-var VOL_FLOOR = 5, VOL_SPAN = 5;
+var VOL_FLOOR = 5, VOL_SPAN = 6;   // library runs 5 (Orbit) to 11 (Pop Then Trim)
 function targetFor(stage){
   return Math.round(VOL_FLOOR + heights()[ORDER.indexOf(stage)] * VOL_SPAN);
 }
@@ -652,10 +760,14 @@ function optionsFor(g, stage){
     var V = window.VERBS, svg = el.svg || "";
     var ids = Object.keys(V).filter(function(k){
       var vb = V[k];
-      if (vb.needs === "stroke" && !hasStroke(svg)) return false;
-      if (vb.needs === "second-state" && !el.f.secondState) return false;
-      if (vb.needs === "in-progress" && !el.f.loading) return false;
-      if (vb.cont && !el.f.loading) return false;
+      var needs = vb.needs ? [].concat(vb.needs) : [];
+      if (needs.indexOf("stroke") > -1 && !hasStroke(svg)) return false;
+      if (needs.indexOf("second-part") > -1 && (el.parts || 0) < 2) return false;
+      if (needs.indexOf("in-progress") > -1 && !el.f.loading) return false;
+      /* Some gestures belong to one kind of journey only. Emit and Lift are
+         reward motion; using them on a claim is the thing the framework
+         exists to prevent. */
+      if (vb.onlyIn && vb.onlyIn.indexOf(window.JOURNEY_KIND || "standard") === -1) return false;
       return true;
     });
     ids.sort(function(x,y){
@@ -676,14 +788,25 @@ function motionOf(id){ return window.VERBS[id] || window.PAT[id]; }
 
 /* The one motion that stands out. The plugin decides this, it is not a
    control. Nothing stands out at Find or Complete. */
+/* The one motion that stands out. The plugin decides this; it is not a
+   control. Nothing stands out at Find or Complete. A candidate has to be
+   genuinely significant: a completion mark, an icon, or a text layer clearly
+   larger than the others. Falling through to "any single element" was how an
+   arbitrary line of text ended up leading a Confirmation. */
 function mainMotionOf(fr, stage){
   if (stage === "Find" || stage === "Complete") return null;
   var gs = groups(fr), i;
+
   for (i=0;i<gs.length;i++) if (gs[i].el.f.completes) return gs[i].key;
-  if (stage === "Confirm" || stage === "Welcome") {
-    for (i=0;i<gs.length;i++) if (gs[i].el.t === "icon") return gs[i].key;
-    for (i=0;i<gs.length;i++) if (kindOf(gs[i].el) === "single") return gs[i].key;
-  }
+  if (stage !== "Confirm" && stage !== "Welcome") return null;
+  for (i=0;i<gs.length;i++) if (gs[i].el.t === "icon" && gs[i].count === 1) return gs[i].key;
+
+  /* A text layer only counts if it is at least half again the height of the
+     next largest text on the frame. Otherwise nothing leads. */
+  var texts = gs.filter(function(g){ return g.el.t === "text" && g.count === 1; })
+                .sort(function(a,b){ return b.el.h - a.el.h; });
+  if (texts.length >= 2 && texts[0].el.h >= texts[1].el.h * 1.5) return texts[0].key;
+  if (texts.length === 1 && gs.length > 1) return texts[0].key;
   return null;
 }
 
@@ -693,7 +816,30 @@ function foundOn(fr){
 }
 
 /* ------------------------------------------------------------- prompts */
+/* Icon prompts list the sequence, because these gestures are compound.
+   A single line cannot describe the success check. */
+function verbPrompt(vb, g, frameName, isMain){
+  var EASt = window.EAS;
+  var L = ["Animate " + g.label + " on " + frameName + ".", vb.plain, ""];
+  vb.parts.forEach(function (pt) {
+    L.push("- " + pt.part + ": " + pt.track.toLowerCase().replace(/_/g, " ")
+      + " from " + pt.from + " to " + pt.to
+      + ", starting at " + pt.at + "ms over " + pt.ms + "ms, "
+      + EASt[pt.e || vb.e].c + " (" + (pt.e || vb.e) + ").");
+  });
+  L.push("");
+  if (vb.loops) L.push("Loop the whole gesture on a " + window.DUR["duration-loop"].ms
+    + "ms cycle, holding still for the remainder.");
+  if (vb.st) L.push("Offset each part by " + vb.st + "ms (stagger-parts).");
+  if (vb.seenIn) L.push("Matches the " + vb.seenIn + " icon already in the Qi library.");
+  L.push("Animate inside this icon only. Do not animate the frame or the layers beside it.");
+  if (vb.never) L.push(vb.never);
+  if (isMain) L.push("This is the main motion on this frame. Nothing else should compete with it.");
+  return L.join("\n");
+}
+
 function promptFor(id, g, frameName, isMain){
+  if (window.VERBS[id]) return verbPrompt(window.VERBS[id], g, frameName, isMain);
   var p = motionOf(id), DURt = window.DUR, EASt = window.EAS;
   var d = p.tokens.filter(function(t){ return DURt[t] && t.indexOf("duration-") === 0; })[0];
   var L = ["Animate " + g.label + (g.count>1 ? " (all "+g.count+")" : "") + " on " + frameName + ".",
@@ -702,15 +848,47 @@ function promptFor(id, g, frameName, isMain){
     + ", " + EASt[p.e].c + " (" + p.e + ").");
   if (p.st) L.push(p.st + "ms between siblings (stagger-tight).");
   if (p.qi) L.push("Matches the Qi " + p.qi + " transition.");
-  if (window.VERBS[id]) L.push("One unbroken movement, one property.");
   L.push("Trigger on this layer only. Do not animate the frame or add a page transition.");
   if (p.never) L.push(p.never);
   if (isMain) L.push("This is the main motion on this frame. Nothing else should compete with it.");
   return L.join(" ");
 }
 
+function easingSpec(name){
+  var EASt = window.EAS;
+  var m = /cubic-bezier\(([^)]+)\)/.exec(EASt[name].c);
+  if (!m) return { type: "LINEAR" };
+  var n = m[1].split(",").map(Number);
+  return { type: "CUSTOM_CUBIC_BEZIER",
+           easingFunctionCubicBezier: { x1:n[0], y1:n[1], x2:n[2], y2:n[3] } };
+}
+
+/* A verb is a sequence of tracks, so it returns several. Durations in SECONDS. */
+function verbKeyframes(vb){
+  var total = vb.loops ? window.DUR["duration-loop"].ms
+            : vb.parts.reduce(function(m,p){ return Math.max(m, p.at + p.ms); }, 0);
+  return {
+    compound: true,
+    loops: !!vb.loops,
+    durationSeconds: total / 1000,
+    tracks: vb.parts.map(function (pt) {
+      return {
+        part: pt.part,
+        track: pt.track,
+        durationSeconds: pt.ms / 1000,
+        keyframes: [
+          { timelinePosition: pt.at / 1000, value: pt.from },
+          { timelinePosition: (pt.at + pt.ms) / 1000, value: pt.to,
+            easing: easingSpec(pt.e || vb.e) }
+        ]
+      };
+    })
+  };
+}
+
 /* Figma Motion keyframes for a chosen motion. Durations are in SECONDS. */
 function keyframesFor(id){
+  if (window.VERBS[id]) return verbKeyframes(window.VERBS[id]);
   var p = motionOf(id), EASt = window.EAS;
   var secs = p.ms / 1000;
   var m = /cubic-bezier\(([^)]+)\)/.exec(EASt[p.e].c);
@@ -733,7 +911,7 @@ function keyframesFor(id){
   else if (track === "ROTATION") { from = -30; to = 0; }
   else                           { from = 0; to = 1; }
 
-  return { track:track, durationSeconds:secs, stagger: p.st ? p.st/1000 : 0,
+  return { compound:false, track:track, durationSeconds:secs, stagger: p.st ? p.st/1000 : 0,
            keyframes:[ { timelinePosition:0, value:from },
                        { timelinePosition:secs, value:to, easing:ease } ] };
 }
@@ -744,6 +922,7 @@ window.ENGINE = {
   diagnose: diagnose, groups: groups, kindOf: kindOf,
   optionsFor: optionsFor, motionOf: motionOf, mainMotionOf: mainMotionOf,
   foundOn: foundOn, promptFor: promptFor, keyframesFor: keyframesFor,
+  verbKeyframes: verbKeyframes, easingSpec: easingSpec,
   libFor: libFor, hasStroke: hasStroke, hasPart: hasPart
 };
 
@@ -903,8 +1082,9 @@ var E = window.ENGINE;
 var PAT = window.PAT, VERBS = window.VERBS, STAGES = window.STAGES;
 var DUR = window.DUR, EAS = window.EAS, ORDER = E.ORDER;
 
-var ICON_RULE = "One unbroken movement, one property. Icon motion is judged on Natural first: "
-  + "it should read as the thing behaving, not as an effect applied to it.";
+var ICON_RULE = "Icon motion is judged on Natural first: it should read as the thing behaving, "
+  + "not as an effect applied to it. These gestures are compound and looped, matching the "
+  + "animated icons already in the Qi library.";
 
 var TESTS = [
   { k:"nat", l:"Natural",    p:"feels real",  n:"Nothing here needs to imitate a physical object." },
@@ -917,8 +1097,28 @@ var S = {
   frame:null, extra:0, reading:false,
   dx:null, changing:false, aiNote:"",
   gi:null, picked:{}, applied:{},
-  apiKey:"", keyDraft:"", keyStatus:null, testing:false
+  apiKey:"", keyDraft:"", keyStatus:null, testing:false, report:""
 };
+
+/* Verbs describe themselves as a sequence, not as four dial strings. Derive
+   the dials so the framework vocabulary still appears on an icon card. */
+function dialsOf(p){
+  if (p.dials) return p.dials;
+  var tracks = {}, maxMs = 0;
+  (p.parts || []).forEach(function (pt) {
+    tracks[pt.track.toLowerCase().replace(/_/g, " ")] = true;
+    maxMs = Math.max(maxMs, pt.ms);
+  });
+  var amp = Object.keys(tracks).join(", ");
+  return {
+    Amplitude: amp.charAt(0).toUpperCase() + amp.slice(1),
+    Duration: p.loops ? maxMs + "ms, looping every " + DUR["duration-loop"].ms + "ms" : maxMs + "ms",
+    Character: EAS[p.e] ? EAS[p.e].c + " (" + p.e + ")" : p.e,
+    Choreography: (p.parts && p.parts.length > 1)
+      ? p.parts.length + " parts" + (p.st ? ", " + p.st + "ms apart" : ", overlapping")
+      : "One element on its own"
+  };
+}
 
 function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){
@@ -938,6 +1138,7 @@ window.onmessage = function (e) {
     render();
   }
   if (m.type === "key") { S.apiKey = m.key || ""; render(); }
+  if (m.type === "scan-report") { S.report = m.text; render(); }
   if (m.type === "applied") {
     if (m.ok && m.key) S.applied[m.key] = m.viaMotion ? "motion" : "note";
     render();
@@ -1236,9 +1437,9 @@ V.opts = function(b,f){
         +(on?'<div class="opt-b">'
           + volBar(p,o.target,st.label)
           + '<div class="sec" style="margin-top:12px">The Four Dials</div>'
-          + Object.keys(p.dials).map(function(k){
+          + Object.keys(dialsOf(p)).map(function(k){
               return '<div class="kv"><span style="color:var(--ink-3)">'+esc(k)+'</span>'
-                +'<span style="text-align:right">'+esc(p.dials[k])+'</span></div>'; }).join("")
+                +'<span style="text-align:right">'+esc(dialsOf(p)[k])+'</span></div>'; }).join("")
           + '<div class="sec">Tokens</div>'
           + p.tokens.map(function(t){
               return '<div class="kv"><code>'+esc(t)+'</code><span>'+tokVal(t)+'</span></div>'; }).join("")
@@ -1407,8 +1608,31 @@ V.settings = function(b,f){
   if($("rm")) $("rm").onclick=function(){
     S.apiKey=""; S.keyStatus=null; post({ type:"save-key", key:"" }); render(); };
 
-  f.innerHTML='<button style="flex:1" id="bk">Done</button>';
+  f.innerHTML='<button id="sc">Scan report</button><button style="flex:1" id="bk">Done</button>';
+  $("sc").onclick=function(){ S.report=""; S.view="report"; render(); post({ type:"scan-report" }); };
   $("bk").onclick=function(){ S.view=S.prevView||"empty"; render(); };
+};
+
+/* What the plugin actually read off the frame. Paste this anywhere the
+   classification looks wrong, so it can be fixed against real data rather
+   than guessed at. */
+V.report = function(b,f){
+  $("ttl").textContent="Scan Report"; $("stp").textContent="";
+  b.innerHTML='<h3>What The Plugin Read</h3>'
+    +'<p class="lede">Exactly what came back from the selected frame. If an element is '
+    +'classified wrongly, this is the evidence to fix it with.</p>'
+    +(S.report
+      ? '<textarea class="code" id="rp" readonly style="min-height:300px;white-space:pre">'
+        +esc(S.report)+'</textarea>'
+      : '<p class="lede"><span class="spin"></span> Reading the frame…');
+  f.innerHTML='<button id="bk">Back</button>'
+    +'<button class="primary" style="flex:1" id="cp"'+(S.report?'':' disabled')+'>Copy report</button>';
+  $("bk").onclick=function(){ S.view="settings"; render(); };
+  if(S.report) $("cp").onclick=function(){
+    var t=$("rp"); t.select();
+    navigator.clipboard.writeText(t.value).then(function(){
+      $("cp").textContent="Copied"; setTimeout(function(){ $("cp").textContent="Copy report"; },1200);
+    }).catch(function(){}); };
 };
 
 render();

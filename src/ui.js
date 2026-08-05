@@ -9,8 +9,9 @@ var E = window.ENGINE;
 var PAT = window.PAT, VERBS = window.VERBS, STAGES = window.STAGES;
 var DUR = window.DUR, EAS = window.EAS, ORDER = E.ORDER;
 
-var ICON_RULE = "One unbroken movement, one property. Icon motion is judged on Natural first: "
-  + "it should read as the thing behaving, not as an effect applied to it.";
+var ICON_RULE = "Icon motion is judged on Natural first: it should read as the thing behaving, "
+  + "not as an effect applied to it. These gestures are compound and looped, matching the "
+  + "animated icons already in the Qi library.";
 
 var TESTS = [
   { k:"nat", l:"Natural",    p:"feels real",  n:"Nothing here needs to imitate a physical object." },
@@ -23,8 +24,28 @@ var S = {
   frame:null, extra:0, reading:false,
   dx:null, changing:false, aiNote:"",
   gi:null, picked:{}, applied:{},
-  apiKey:"", keyDraft:"", keyStatus:null, testing:false
+  apiKey:"", keyDraft:"", keyStatus:null, testing:false, report:""
 };
+
+/* Verbs describe themselves as a sequence, not as four dial strings. Derive
+   the dials so the framework vocabulary still appears on an icon card. */
+function dialsOf(p){
+  if (p.dials) return p.dials;
+  var tracks = {}, maxMs = 0;
+  (p.parts || []).forEach(function (pt) {
+    tracks[pt.track.toLowerCase().replace(/_/g, " ")] = true;
+    maxMs = Math.max(maxMs, pt.ms);
+  });
+  var amp = Object.keys(tracks).join(", ");
+  return {
+    Amplitude: amp.charAt(0).toUpperCase() + amp.slice(1),
+    Duration: p.loops ? maxMs + "ms, looping every " + DUR["duration-loop"].ms + "ms" : maxMs + "ms",
+    Character: EAS[p.e] ? EAS[p.e].c + " (" + p.e + ")" : p.e,
+    Choreography: (p.parts && p.parts.length > 1)
+      ? p.parts.length + " parts" + (p.st ? ", " + p.st + "ms apart" : ", overlapping")
+      : "One element on its own"
+  };
+}
 
 function $(id){ return document.getElementById(id); }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){
@@ -44,6 +65,7 @@ window.onmessage = function (e) {
     render();
   }
   if (m.type === "key") { S.apiKey = m.key || ""; render(); }
+  if (m.type === "scan-report") { S.report = m.text; render(); }
   if (m.type === "applied") {
     if (m.ok && m.key) S.applied[m.key] = m.viaMotion ? "motion" : "note";
     render();
@@ -342,9 +364,9 @@ V.opts = function(b,f){
         +(on?'<div class="opt-b">'
           + volBar(p,o.target,st.label)
           + '<div class="sec" style="margin-top:12px">The Four Dials</div>'
-          + Object.keys(p.dials).map(function(k){
+          + Object.keys(dialsOf(p)).map(function(k){
               return '<div class="kv"><span style="color:var(--ink-3)">'+esc(k)+'</span>'
-                +'<span style="text-align:right">'+esc(p.dials[k])+'</span></div>'; }).join("")
+                +'<span style="text-align:right">'+esc(dialsOf(p)[k])+'</span></div>'; }).join("")
           + '<div class="sec">Tokens</div>'
           + p.tokens.map(function(t){
               return '<div class="kv"><code>'+esc(t)+'</code><span>'+tokVal(t)+'</span></div>'; }).join("")
@@ -513,8 +535,31 @@ V.settings = function(b,f){
   if($("rm")) $("rm").onclick=function(){
     S.apiKey=""; S.keyStatus=null; post({ type:"save-key", key:"" }); render(); };
 
-  f.innerHTML='<button style="flex:1" id="bk">Done</button>';
+  f.innerHTML='<button id="sc">Scan report</button><button style="flex:1" id="bk">Done</button>';
+  $("sc").onclick=function(){ S.report=""; S.view="report"; render(); post({ type:"scan-report" }); };
   $("bk").onclick=function(){ S.view=S.prevView||"empty"; render(); };
+};
+
+/* What the plugin actually read off the frame. Paste this anywhere the
+   classification looks wrong, so it can be fixed against real data rather
+   than guessed at. */
+V.report = function(b,f){
+  $("ttl").textContent="Scan Report"; $("stp").textContent="";
+  b.innerHTML='<h3>What The Plugin Read</h3>'
+    +'<p class="lede">Exactly what came back from the selected frame. If an element is '
+    +'classified wrongly, this is the evidence to fix it with.</p>'
+    +(S.report
+      ? '<textarea class="code" id="rp" readonly style="min-height:300px;white-space:pre">'
+        +esc(S.report)+'</textarea>'
+      : '<p class="lede"><span class="spin"></span> Reading the frame…');
+  f.innerHTML='<button id="bk">Back</button>'
+    +'<button class="primary" style="flex:1" id="cp"'+(S.report?'':' disabled')+'>Copy report</button>';
+  $("bk").onclick=function(){ S.view="settings"; render(); };
+  if(S.report) $("cp").onclick=function(){
+    var t=$("rp"); t.select();
+    navigator.clipboard.writeText(t.value).then(function(){
+      $("cp").textContent="Copied"; setTimeout(function(){ $("cp").textContent="Copy report"; },1200);
+    }).catch(function(){}); };
 };
 
 render();
