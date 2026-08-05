@@ -1,43 +1,91 @@
 # Delight Motion
 
-A Figma plugin that recommends motion for a journey, using the AIA Qi motion tokens.
+A Figma plugin that reads a frame, works out what kind of moment it is, and
+suggests motion that fits — using the AIA Qi motion tokens.
 
-Select the frames in a journey, tell it which journey it is, and it maps each frame
-to a stage on the delight curve. Pick a stage and it generates a motion recommendation
-for every element in it, with tokens, a preview, the reasoning, and a prompt you can
-paste into Figma Make.
+Select a frame. It tells you the moment, what that means for motion here, and
+gives every element a suggestion you can apply to the canvas as real Figma
+Motion keyframes.
 
 ---
 
 ## Running it
 
-1. Open the Figma **desktop** app. Plugins can only be developed from desktop.
+1. Figma **desktop** app. Plugins can only be developed from desktop.
 2. `Plugins > Development > Import plugin from manifest...`
 3. Pick `manifest.json` in this folder.
-4. Select some frames, then `Plugins > Development > Delight Motion`.
+4. Select a frame, then `Plugins > Development > Delight Motion`.
 
-If you change anything in `src/`, run `node build.js` and then reload the plugin
-in Figma with `Cmd/Ctrl + Alt + P`.
+Changed something in `src/`? Run `node build.js`, then reload the plugin in
+Figma with `Cmd/Ctrl + Alt + P`.
 
 ---
 
-## To add a motion pattern
+## The five moments
 
-Open **`src/data/patterns.js`**. Copy an existing block and change it.
+**Welcome · Find · Act · Confirm · Complete.** Journey-agnostic, so they apply
+to a claim, a policy lookup or a booking equally.
+
+They sit on a curve. Welcome and Confirm are both high — those are the moments
+the interface is speaking rather than serving. Find is the trough, because
+someone is working and motion interrupts them. The difference between Welcome
+and Confirm is not volume, it is scarcity: Confirm gets `ease-settle` at full
+amplitude once per journey.
+
+The curve height gives each stage a **motion volume target**, and that target
+is what orders the suggestions.
+
+---
+
+## How it decides
+
+Four steps. Only the first can involve a model.
+
+**1. Which moment is this?**
+Points accumulate per stage from the frame name and its layers. A name match is
+4 points, strong content evidence 3–4, weaker evidence 2. Highest wins, and it
+is only treated as confident if it scores 5 or more *and* beats the runner-up by
+3 or more. Below that the plugin asks. With an API key it asks Claude instead,
+which can only answer with one of the five stage names.
+
+**2. What can move here?**
+Each element is classified — list, surface, text, icon, tap, loading, leaving —
+and that decides which motions are even offered. Nothing invalid appears.
+
+**3. Which one is suggested?**
+Every motion scores its four dials: Amplitude 1–3, Duration 1–4, Character 1–3,
+Choreography 1–3. They sum to a **motion volume**, 4 quietest to 13 loudest.
+Options sort by how close they sit to the stage's target. Same element at a
+different stage gets a different suggestion, and the curve is the reason.
+
+**4. Apply.**
+Writes real Figma Motion keyframes with `applyManualKeyframeTrack`. If the
+Motion API is unavailable it falls back to placing the spec as a note beside
+the frame, so nothing is lost.
+
+---
+
+## To add a motion
+
+Layout motion goes in **`src/data/patterns.js`**. Icon motion goes in
+**`src/data/verbs.js`**. Copy a block and change it.
 
 ```js
-"my-pattern": {
-  name: "My Pattern",
-  tokens: ["duration-fast", "easing-out"],
+"my-motion": {
+  name: "My Motion",
+  kind: "single",                       // list, single, surface, text, icon, tap, loading, leaving
+  plain: "Rises 12px and fades from 0 to 100%.",
+  tokens: ["duration-fast","ease-out"],
+  ms: 200, e: "ease-out",
+  v: { a:2, d:2, c:2, o:1 },            // the four dial scores
   dials: {
-    Amplitude:    "Rises 12px and fades from 0 to 100%",
+    Amplitude:    "Rises 12px, fades 0 to 100%",
     Duration:     "200ms",
     Character:    "Ease-out, decelerating into place",
     Choreography: "One element on its own"
   },
-  plain: "Starts 12px below its resting position at 0% opacity, then rises into place.",
-  why: {
-    nat: "Why it feels like a real object. Leave \"\" if not relevant.",
+  tests: {
+    nat: "Why it behaves like a real object. Leave \"\" if not relevant.",
     fun: "What information it carries.",
     exp: "What tone it sets."
   },
@@ -45,18 +93,15 @@ Open **`src/data/patterns.js`**. Copy an existing block and change it.
 }
 ```
 
-Rules for writing a pattern:
+Rules:
 
-- **Amplitude is a number, not an adjective.** "Rises 12px", not "a nudge".
-- **`plain` describes start state to end state**, and says what stays fixed.
-- **Leave a `why` empty rather than inventing one.** The panel shows
+- **Amplitude is a number, not an adjective.** "Rises 12px", never "a nudge".
+- **`plain` gives start state to end state**, and says what stays fixed.
+- **Leave a `tests` entry empty rather than inventing one.** The panel shows
   "Neutral by design" and that is a real answer.
 - Every value in `tokens` must exist in `src/data/tokens.js`.
-- **Optional `curve`** gives the pattern quiet / mid / peak variants. Any dial you
-  list overrides the base one. `ms` and `stagger` set the real numbers used by the
-  preview and the prompt. Add a `note` explaining why that band differs.
-- **Optional `curveFixed`** marks a pattern that should never vary, with the reason.
-  Use it deliberately. Silence about the curve is worse than a stated exception.
+- Add it to the right `opts` list in `src/data/stages.js`, or it will never be
+  offered.
 
 Then run `node build.js`.
 
@@ -64,158 +109,110 @@ Then run `node build.js`.
 
 ## To change a token value
 
-Open **`src/data/tokens.js`**. Change the number in one place. Every pattern using
-that token picks it up.
+**`src/data/tokens.js`**. One place. Everything using it picks it up.
 
 ```js
-"duration-moderate": { ms: 300, qi: true, use: "Half the phone width and up." }
+"duration-moderate": { ms: 300, u: "Larger surfaces, roughly half the phone width and up." }
 ```
-
-`qi: true` means Qi has ratified the value. `qi: false` means this framework
-defines it and Qi has not adopted it yet, and the panel shows a small `new` badge.
-When Qi adopts one, flip the flag.
-
-Two values are currently `qi: false`: `stagger-tight` and `easing-settle`.
 
 ---
 
-## To add a journey
+## To change what is allowed at a stage
 
-Open **`src/data/journeys.js`**.
+**`src/data/stages.js`**. Each stage has `can`, `cannot`, and `opts`.
 
-```js
-myJourney: {
-  name: "What it is called in the dropdown",
-  stages: [
-    { id: "Welcome", h: .74, plain: "What happens here",
-      match: ["welcome", "intro", "start"] },
-    { id: "Ask",     h: .12, plain: "The user gives information",
-      match: ["input", "form", "keyboard"] },
-    { id: "Confirm", h: 1,   plain: "The user commits", lead: true,
-      match: ["confirm", "success", "done"] }
-  ]
-}
-```
+`opts` lists which motions apply to each kind of element there. Order does not
+matter — the engine sorts by distance from the stage's volume target.
 
-- `h` is relative motion volume, 0 to 1, **relative within this journey only**.
-- Shape: open moderately high, drop to the quietest point while the user is
-  working, rise to one peak where they commit. No tail after the peak.
-- `lead: true` marks the peak. Exactly one stage per journey.
-- `match` are words that suggest a frame belongs to that stage. Used when there
-  is no API key.
+`src/data/found.js` holds the conditional notes, the ones triggered by what is
+actually on the frame rather than by the stage.
 
 ---
 
-## To update the animated icon list
+## Icons
 
-Open **`src/data/icons.js`**. The five entries there are **placeholders**.
-Replace `icon` with the real component names from the Qi icon library.
+Icons work differently, because an icon's motion depends on what it depicts and
+that cannot be read from its size.
 
-When a layer name matches, the plugin tells the designer to use the existing
-icon instead of specifying an animation to build.
+**If it is in the Qi animated library**, the plugin says so and offers to insert
+the component. It carries its own motion, so it stays in step if the library
+changes. The component keys are in **`src/data/icons.js`** — they are
+**placeholders**. Replace them with real keys from each component's share link.
 
----
+**If it is not**, the plugin offers verbs from `src/data/verbs.js`, filtered by
+what the icon can actually support. `needs: "stroke"` checks the exported SVG
+for a stroked path. `needs: "in-progress"` only allows looping motion where
+something is genuinely loading. `needs: "second-state"` requires a second icon
+to swap to.
 
-## Frame naming
-
-Stage mapping reads frame names. Numbered, specific names work:
-
-```
-01 Welcome          03 Upload receipt          06 Confirmation
-```
-
-Names that repeat do not. A file with nine frames called `Book doctor`
-cannot be ordered by name, and the plugin will mark them **Guessed**.
-Either number them, or add a Claude key so ordering and context can be used.
-
-You can also untick any frame on the setup screen. Do that for filter panels,
-component variants and alternate branches, which are not journey steps.
+Icon motion is judged on **Natural** first, and runs as one unbroken movement
+on one property.
 
 ---
 
 ## The API key
 
-Optional. Without one the plugin works, matching frames by name.
-With one, Claude does the mapping, which is much better when names repeat.
+Optional. Without one the plugin runs entirely on rules.
 
-Get a key at platform.claude.com, under API keys. It is stored with
-`figma.clientStorage`, on that machine only. It is never written into the
-plugin files and never shared with anyone else who installs it.
+With one, Claude is asked two things and only two:
 
-Only journey names, stage names and frame names are sent. Frame contents are not.
+1. **Which moment is this**, when the rules are unsure. It can only answer with
+   one of the five stage names; anything else is discarded.
+2. **Which icon verb**, from the closed list in `verbs.js`. It sees the icon's
+   exported outline. It never returns a duration, an easing or a token.
 
-Cost is roughly $0.0014 per mapping on `claude-haiku-4-5-20251001`.
-New accounts get free credits, enough for a few thousand runs.
+Get a key at platform.claude.com under API keys. It is stored with
+`figma.clientStorage` on that machine only, never written into the plugin files.
+
+**What is sent:** stage names, layer names and sizes, icon outlines.
+**What is not:** text content, images, anything outside the selected frame.
+
+Roughly $0.001 per read on `claude-haiku-4-5-20251001`. New accounts get free
+credits, enough for a few thousand.
 
 ---
 
 ## File map
 
 ```
-manifest.json          Figma plugin config. Declares api.anthropic.com.
-code.js                Runs in the Figma sandbox. Reads the selection,
-                       writes annotation frames, stores the key. No network.
-build.js               Stitches src/ into dist/ui.html. Run: node build.js
+manifest.json      Figma config. Declares api.anthropic.com.
+code.js            Figma sandbox. Reads the frame, exports icon SVGs,
+                   writes Motion keyframes. No network access.
+build.js           Stitches src/ into dist/ui.html. Run: node build.js
 
 src/
-  ui.template.html     Panel shell.
-  ui.css               Styling.
-  ui.js                Views, state, messaging.
-  engine.js            The rules. Which pattern for which element.
-  claude.js            The only file that calls a model.
+  ui.template.html Panel shell
+  ui.css           Styling
+  ui.js            Views, state, messaging
+  engine.js        All the rules. Diagnosis, curve, volume, options.
+  claude.js        The only file that calls a model
   data/
-    patterns.js        <- add a motion here
-    tokens.js          <- change a duration or easing here
-    journeys.js        <- add a journey here
-    icons.js           <- real icon names go here
+    patterns.js    <- layout motion
+    verbs.js       <- icon motion
+    tokens.js      <- durations and easings
+    stages.js      <- the five moments and what is allowed at each
+    found.js       <- notes triggered by frame contents
+    icons.js       <- animated components in the Qi library
 
-dist/ui.html           Generated. Do not edit by hand.
+dist/ui.html       GENERATED. Do not edit. Run build.js instead.
 ```
 
-`dist/ui.html` is **generated**, not a duplicate. Figma inlines `ui.html` into the
-plugin bundle, so it cannot load `ui.js` or `ui.css` at runtime. `build.js` stitches
-them together. Edit `src/`, run `node build.js`, never edit `dist/`.
-
-**Everything a designer needs to change lives in `src/data/`.**
-If you find yourself editing `engine.js` or `ui.js` to change the framework,
-something has gone wrong in the data model instead.
+**Everything a designer needs to change lives in `src/data/`.** If you find
+yourself editing `engine.js` or `ui.js` to change the framework, the data model
+is missing something instead.
 
 ---
 
-## How it decides
+## Known gaps
 
-Three layers. Only the first uses a model.
-
-1. **Stage mapping.** Frame names and order in, one stage per frame out.
-   Claude if there is a key, keyword matching if not. Constrained to stages the
-   journey file defines. **You review this before anything else runs.**
-
-2. **Element classification.** No model. Reads each layer's type, width, height,
-   and how many siblings share its name. Flags buttons, currency text, icons,
-   loading states, completion states.
-
-3. **Pattern selection, then curve tuning.** An ordered rule list in `engine.js` picks
-   the pattern, first match wins. Then the stage decides the band, and the band sets
-   the dial values.
-   Money never moves. Taps get 100ms. Icons already in the library return the
-   icon instead of a pattern. Two or more siblings cascade. Over 90% frame width
-   enters as a surface.
-
-   **The element picks the pattern. The curve picks the dial.** A cascade at a quiet
-   stage rises 8px with a 40ms offset. The same cascade at the peak rises 16px with
-   an 80ms offset. Four patterns deliberately ignore the curve, because response to
-   touch, waiting, reading speed and completion marks are constants, not volumes.
-   Those are marked `curveFixed` in `patterns.js` with the reason.
-
-Rationale and tokens are looked up from the data files. Prompts are string
-templates. Nothing is generated freely.
-
----
-
-## Not built yet
-
-- **Check mode.** Linting animation that already exists. Needs the prototype
-  reactions API, which is a bigger job than it looks.
-- **Writing Smart Animate timing** onto prototype transitions directly.
-- **A key proxy** so nobody handles a key. About 20 lines on a Cloudflare Worker
-  or Vercel function. Worth doing before this goes past one or two people.
+- **Motion API is in beta** and subject to change. If it moves, `keyframesFor`
+  in `engine.js` and `applyMotion` in `code.js` are the two places to fix.
+- **Icon library keys are placeholders.** Replace before anyone relies on them.
+- **Swap needs a second-icon picker.** The verb exists and is documented, but
+  nothing lets a designer point at the icon being swapped to, so it never fires.
+- **The calibration constants are provisional.** `VOL_FLOOR` and `VOL_SPAN` in
+  `engine.js` map the curve onto the volume range, and the diagnosis weights
+  were tuned against a handful of frames. The architecture is settled; the
+  numbers want testing against real files.
+- **Check mode** — linting motion that already exists — is not built. The
+  Motion API can read keyframes back, so it is now possible.
