@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Delight Motion</title>
 <style>
-/* ui.css — panel styling. Safe for a designer to edit. */
+
 :root{
   --ink:#1a1a1a; --ink-2:#5c5c5c; --ink-3:#8f8f8f;
   --line:#e6e6e6; --line-2:#cfcfcf;
@@ -16,8 +16,7 @@
   --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);font-family:var(--font);color:var(--ink);min-height:100vh;
-  display:flex;align-items:flex-start;justify-content:center;padding:36px 20px}
+
 
 
 
@@ -28,80 +27,121 @@ body{background:var(--bg);font-family:var(--font);color:var(--ink);min-height:10
 .foot{padding:10px 12px;border-top:1px solid var(--line);display:flex;gap:6px;flex:0 0 auto}
 
 button{font-family:var(--font);font-size:11px;padding:7px 10px;border-radius:6px;
-  border:1px solid var(--line-2);background:var(--panel);color:var(--ink);cursor:pointer;text-align:center}
+  border:1px solid var(--line-2);background:var(--panel);color:var(--ink);cursor:pointer}
 button:hover{background:var(--sub)}
 button.primary{background:var(--aia);border-color:var(--aia);color:#fff}
 button.primary:hover{opacity:.9}
 button:disabled{opacity:.4;cursor:not-allowed}
-button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--aia);outline-offset:2px}
+button:focus-visible,select:focus-visible{outline:2px solid var(--aia);outline-offset:2px}
 .link{border:0;background:none;color:var(--ink-3);font-size:10px;padding:0;text-decoration:underline}
 .link:hover{color:var(--aia);background:none}
+select{font-family:var(--font);font-size:11px;border:1px solid var(--line-2);border-radius:6px;
+  padding:7px;background:var(--panel);color:var(--ink);width:100%}
 
-h3{font-size:13px;font-weight:600;margin-bottom:3px}
-.lede{font-size:11px;color:var(--ink-2);line-height:1.5;margin-bottom:12px}
+h3{font-size:14px;font-weight:600;margin-bottom:3px}
+.lede{font-size:11px;color:var(--ink-2);line-height:1.55;margin-bottom:12px}
 .note{font-size:10px;color:var(--ink-3);line-height:1.55}
-.q{font-size:11.5px;margin-bottom:5px;font-weight:500}
 .sec{font-size:9.5px;color:var(--ink-3);letter-spacing:.04em;text-transform:uppercase;
-  margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+  margin:16px 0 7px;padding-bottom:4px;border-bottom:1px solid var(--line)}
 
-select,textarea{width:100%;font-family:var(--font);font-size:11px;border:1px solid var(--line-2);
-  border-radius:6px;padding:7px;background:var(--panel);color:var(--ink)}
-textarea{resize:vertical;line-height:1.5}
-textarea.code{font-family:var(--mono);font-size:9.5px;background:var(--sub);min-height:150px;line-height:1.6}
+.diag{background:var(--aia-bg);border:1px solid var(--aia-line);border-radius:8px;padding:12px;margin-bottom:10px}
+.diag .k{font-size:9.5px;color:var(--aia);letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px}
+.diag h2{font-size:17px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.diag p{font-size:11px;color:var(--ink-2);line-height:1.5}
+.evi{font-size:10px;color:var(--ink-2);line-height:1.6;padding-left:14px;position:relative;margin-bottom:4px}
+.evi:before{content:"";position:absolute;left:3px;top:7px;width:4px;height:4px;border-radius:50%;background:var(--aia-line)}
 
-.opt{width:100%;text-align:left;padding:8px 10px;border:1px solid var(--line-2);border-radius:6px;
-  margin-bottom:5px;background:var(--panel);cursor:pointer;font-family:var(--font);font-size:11.5px}
-.opt:hover{border-color:var(--ink-3)}
-.opt[aria-pressed="true"]{background:var(--aia-bg);border-color:var(--aia);color:var(--aia);font-weight:500}
-.opt small{display:block;font-size:10px;color:var(--ink-3);margin-top:2px;font-weight:400}
-.opt[aria-pressed="true"] small{color:var(--aia)}
+.rule{display:flex;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:10.5px;line-height:1.5}
+.rule .ic{flex:0 0 15px;text-align:center;font-size:11px}
+.rule.yes .ic{color:var(--ok)} .rule.no .ic{color:var(--warn)}
+.rule.found .ic{color:var(--aia)} .rule.always .ic{color:var(--ink-3)}
+.rule b{font-weight:600;display:block}
+.rule span.d{color:var(--ink-2);display:block;margin-top:2px}
 
-.frow{display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid var(--line);font-size:11px}
-.frow .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.frow select{width:auto;max-width:96px;font-size:10px;padding:3px 4px;color:var(--ink-2)}
-.guess{font-size:9px;color:var(--warn);border:1px solid var(--warn-line);background:var(--warn-bg);
-  border-radius:3px;padding:1px 4px;white-space:nowrap}
+.erow{width:100%;text-align:left;display:flex;align-items:center;gap:8px;padding:10px;
+  border:1px solid var(--line-2);border-radius:7px;margin-bottom:6px;background:var(--panel);
+  cursor:pointer;font-family:var(--font)}
+.erow:hover{border-color:var(--ink-3)}
+.erow .nm{font-size:11.5px;font-weight:500}
+.erow .st{font-size:10px;color:var(--ink-3);display:block;margin-top:2px;font-weight:400}
+.erow .chev{color:var(--ink-3);font-size:12px}
+.erow.done{border-color:var(--ok-line);background:var(--ok-bg)}
+.pill{font-size:8.5px;padding:1px 6px;border-radius:99px;white-space:nowrap;
+  background:var(--aia-bg);color:var(--aia);border:1px solid var(--aia-line)}
+.pill.g{background:var(--sub);color:var(--ink-3);border-color:var(--line-2)}
+.pill.k{background:var(--ok-bg);color:var(--ok);border-color:var(--ok-line)}
 
-.kv{display:flex;justify-content:space-between;gap:8px;font-size:10.5px;padding:4px 0;border-bottom:1px solid var(--line)}
+.opt{border:1px solid var(--line-2);border-radius:8px;margin-bottom:9px;overflow:hidden;cursor:pointer}
+.opt.on{border-color:var(--aia);box-shadow:0 0 0 1px var(--aia)}
+.opt-h{display:flex;align-items:center;gap:8px;padding:9px 10px}
+.opt-h .nm{flex:1;font-size:12px;font-weight:600}
+.opt-s{font-size:10px;color:var(--ink-2);padding:0 10px 8px;line-height:1.5}
+.pv{height:62px;background:var(--sub);border-top:1px solid var(--line);display:flex;
+  align-items:center;justify-content:center;gap:5px;overflow:hidden}
+.sq{width:28px;height:28px;border-radius:5px;background:var(--aia)}
+.bar{width:9px;height:28px;border-radius:3px;background:var(--aia)}
+.tick{width:34px;height:34px;border-radius:50%;border:2.5px solid var(--aia);position:relative}
+.tick i{position:absolute;left:8px;top:15px;width:15px;height:7px;border-left:2.5px solid var(--aia);
+  border-bottom:2.5px solid var(--aia);transform:rotate(-45deg);transform-origin:left bottom}
+.opt-b{padding:10px;border-top:1px solid var(--line);font-size:10.5px}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:10px;padding:4px 0;border-bottom:1px solid var(--line)}
 .kv:last-child{border-bottom:0}
-.kv code{font-family:var(--mono);font-size:10px}
-.new{font-size:8.5px;color:var(--ink-3);border:1px solid var(--line-2);border-radius:3px;padding:0 3px;margin-left:4px}
-
-.flag{border-radius:6px;padding:8px 9px;font-size:10.5px;line-height:1.5;margin-bottom:8px}
-.flag.bad{background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn)}
-.flag.good{background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--ok)}
+.kv code{font-family:var(--mono);font-size:9.5px}
+.new{font-size:8px;border:1px solid var(--line-2);border-radius:3px;padding:0 3px;margin-left:4px;color:var(--ink-3)}
+textarea{width:100%;font-family:var(--mono);font-size:9.5px;line-height:1.6;border:1px solid var(--line-2);
+  border-radius:6px;padding:8px;background:var(--sub);color:var(--ink);resize:vertical;min-height:96px;margin-top:8px}
+.flag{border-radius:6px;padding:9px 10px;font-size:10.5px;line-height:1.5;margin-bottom:9px}
+.flag.warn{background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn)}
+.flag.lib{background:var(--ok-bg);border:1px solid var(--ok-line);color:var(--ok)}
 .flag b{display:block;margin-bottom:2px}
-.rec{background:var(--aia-bg);border:1px solid var(--aia-line);border-radius:6px;padding:8px 9px;
-  font-size:10.5px;color:var(--aia);line-height:1.5;margin-bottom:10px}
-
-.ann{border:1px solid var(--line-2);border-radius:6px;margin-bottom:8px;overflow:hidden}
-.ann-h{display:flex;align-items:flex-start;gap:6px;padding:8px 9px;background:var(--sub);cursor:pointer}
-.ann-h .en{flex:1;font-size:11.5px;font-weight:500}
-.ann-h .pt{font-size:9.5px;color:var(--aia);white-space:nowrap;padding-top:1px}
-.ann-b{padding:9px;border-top:1px solid var(--line);font-size:10.5px;line-height:1.55}
-.ann.mute .ann-h .pt{color:var(--ink-3)}
-.dial{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:10px;margin-bottom:8px}
-.dial span:nth-child(odd){color:var(--ink-3)}
-
-.pvbox{background:var(--sub);border-radius:6px;height:58px;display:flex;align-items:center;
-  justify-content:center;gap:5px;overflow:hidden;margin-bottom:8px}
-.sq{width:26px;height:26px;border-radius:5px;background:var(--aia)}
-.bar{width:8px;height:26px;border-radius:3px;background:var(--aia)}
-
 .spin{width:12px;height:12px;border:2px solid var(--line-2);border-top-color:var(--aia);
   border-radius:50%;display:inline-block;animation:sp .7s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.spin{animation:none}}
-.lvl{font-size:9px;padding:1px 6px;border-radius:99px;border:1px solid var(--line-2);color:var(--ink-3);white-space:nowrap}
-.lvl.peak{background:var(--aia-bg);border-color:var(--aia-line);color:var(--aia)}
-.help{background:var(--sub);border-radius:6px;padding:9px;font-size:10px;color:var(--ink-2);
-  line-height:1.6;margin-bottom:10px}
-.tabs{display:flex;gap:4px;margin-bottom:7px}
-.tabs button{flex:1;padding:6px 4px;font-size:10px}
+@media(prefers-reduced-motion:reduce){.spin{animation:none}}
 
-/* --- plugin host layout (was inline in the prototype) --- */
-body.plugin-host{background:var(--panel);display:block;padding:0;min-height:0;height:100vh;
-  display:flex;flex-direction:column;overflow:hidden}
+
+.libcard{display:flex;gap:10px;align-items:center;border:1px solid var(--ok-line);background:var(--ok-bg);
+  border-radius:8px;padding:10px;margin-bottom:9px}
+.libcard .ico{width:44px;height:44px;border-radius:8px;background:var(--panel);border:1px solid var(--ok-line);
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.libcard .t{flex:1;font-size:11px;line-height:1.5}
+.libcard code{font-family:var(--mono);font-size:9.5px;color:var(--ok)}
+.stagebar{display:flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid var(--aia-line);
+  background:var(--aia-bg);border-radius:7px;margin-bottom:12px}
+.stagebar .k{font-size:9.5px;color:var(--aia);text-transform:uppercase;letter-spacing:.04em}
+.stagebar b{flex:1;font-size:11.5px;color:var(--ink)}
+.stagebar .link{color:var(--aia)}
+.flag.main{background:var(--aia-bg);border:1px solid var(--aia-line);color:var(--aia)}
+.flag.none{background:var(--sub);border:1px solid var(--line);color:var(--ink-2)}
+.volwrap{background:var(--sub);border-radius:6px;padding:9px 10px}
+.volhead{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-3);margin-bottom:7px}
+.volhead span:first-child{color:var(--ink);font-weight:600}
+.volrow{display:flex;align-items:center;gap:8px;font-size:9.5px;color:var(--ink-3);margin-bottom:4px}
+.volrow>span:first-child{flex:0 0 74px}
+.voltrack{flex:1;height:3px;border-radius:2px;background:var(--line-2);overflow:hidden}
+.volfill{display:block;height:3px;border-radius:2px;background:var(--aia)}
+.volnum{flex:0 0 10px;text-align:right;font-size:9px;color:var(--ink-3)}
+.voltotal{position:relative;height:6px;border-radius:3px;background:var(--line-2);margin-bottom:7px}
+.voltotalfill{display:block;height:6px;border-radius:3px;background:var(--aia)}
+.voltarget{position:absolute;top:-3px;width:2px;height:12px;border-radius:1px;background:var(--ink);margin-left:-1px}
+.volfit{font-size:9.5px;color:var(--warn);line-height:1.5;margin:0 0 9px}
+.volfit.ok{color:var(--ink-3)}
+.iconpv{display:inline-block;width:40px;height:40px;color:var(--aia)}
+.iconpv svg{width:100%;height:100%;display:block}
+.libcard .iconpv{width:34px;height:34px}
+.ecard{border:1px solid var(--line-2);border-radius:8px;margin-bottom:7px;overflow:hidden;background:var(--panel)}
+.ecard.done{border-color:var(--ok-line);background:var(--ok-bg)}
+.ehead{display:flex;align-items:flex-start;gap:8px;padding:9px 10px 7px}
+.ehead .nm{font-size:11.5px;font-weight:500}
+.ehead .st{display:block;font-size:10px;color:var(--ink-3);margin-top:2px}
+.eact{display:flex;gap:5px;padding:0 10px 9px}
+.mini{flex:1;font-size:10px;padding:6px 8px}
+.mini.go{background:var(--aia);border-color:var(--aia);color:#fff}
+.ecard.done .mini.go{background:var(--ok);border-color:var(--ok)}
+
+/* --- plugin host --- */
+body{margin:0;background:var(--panel);font-family:var(--font);color:var(--ink);
+  height:100vh;display:flex;flex-direction:column;overflow:hidden}
 .chrome button#gear{border:0;background:none;padding:2px 4px;font-size:13px;line-height:1;color:var(--ink-3)}
 .chrome button#gear:hover{color:var(--ink)}
 .keyfield{width:100%;font-family:var(--mono);font-size:10.5px;border:1px solid var(--line-2);
@@ -109,30 +149,11 @@ body.plugin-host{background:var(--panel);display:block;padding:0;min-height:0;he
 .flag.neutral{background:var(--sub);border:1px solid var(--line);color:var(--ink-2)}
 .flag code{font-family:var(--mono);font-size:10px}
 .steps{font-size:10.5px;color:var(--ink-2);line-height:1.7;padding-left:16px}
-.chip-code{font-family:var(--mono);font-size:9.5px;border-radius:4px;padding:5px 6px}
-.chip-code.ok{border:1px solid var(--ok-line);background:var(--ok-bg);color:var(--ink)}
-.chip-code.warn{border:1px solid var(--warn-line);background:var(--warn-bg);color:var(--ink-3)}
-.frow input[type=checkbox]{accent-color:var(--aia);width:13px;height:13px}
-
-/* --- motion volume explainer --- */
-.dials-x{margin:10px 0 12px;display:flex;flex-direction:column;gap:9px}
-.dx-row{display:grid;grid-template-columns:1fr 78px;grid-template-rows:auto auto;
-  column-gap:10px;row-gap:2px;align-items:center}
-.dx-label{grid-column:1;grid-row:1;font-size:10.5px;color:var(--ink);font-weight:500}
-.dx-track{grid-column:2;grid-row:1;height:3px;border-radius:2px;background:var(--line)}
-.dx-fill{height:3px;border-radius:2px;background:var(--aia)}
-.dx-sub{grid-column:1/-1;grid-row:2;font-size:9.5px;color:var(--ink-3);line-height:1.4}
-.help p{font-size:10px;line-height:1.6}
-.help b{display:block;color:var(--ink);font-size:10.5px}
-/* --- curve tuning note on an annotation --- */
-.tuned{font-size:9.5px;color:var(--aia);background:var(--aia-bg);border:1px solid var(--aia-line);
-  border-radius:5px;padding:6px 7px;line-height:1.5;margin:0 0 8px}
-.tuned b{font-weight:600}
-.fixedn{font-size:9.5px;color:var(--ink-3);line-height:1.5;margin:0 0 8px}
+.q{font-size:11.5px;margin-bottom:5px;font-weight:500}
 
 </style>
 </head>
-<body class="plugin-host">
+<body>
   <div class="chrome">
     <b id="ttl">Delight Motion</b>
     <span class="sp" id="stp"></span>
@@ -142,1162 +163,1256 @@ body.plugin-host{background:var(--panel);display:block;padding:0;min-height:0;he
   <div class="foot" id="foot"></div>
 
 <script>
-/* tokens.js
-   Motion token values. Matches the Qi transition skill.
-   qi:true  means the value is ratified in Qi.
-   qi:false means this framework defines it and Qi has not adopted it yet.
-   To change a duration or easing, change it here only. */
+/* tokens.js — Qi motion tokens. Change a value here and every pattern
+   and verb that uses it picks it up. Do not edit anything outside src/data. */
 
-window.TOKENS = {
-  "stagger-tight":       { ms: 60,  qi: false, use: "Sibling offset only. Never across a vertical hierarchy." },
-  "duration-instant":    { ms: 100, qi: true,  use: "Anything finger-caused." },
-  "duration-fast":       { ms: 200, qi: true,  use: "Chips, rows, icon swaps." },
-  "duration-moderate":   { ms: 300, qi: true,  use: "Half the phone width and up." },
-  "duration-slow":       { ms: 500, qi: true,  use: "One element carrying a stage alone." },
-  "duration-deliberate": { ms: 700, qi: true,  use: "Not used in any pattern yet." },
-
-  "easing-in-out": { cubic: "cubic-bezier(.42,0,.58,1)",  qi: true,  use: "Qi default. Starts and ends on screen." },
-  "easing-out":    { cubic: "cubic-bezier(0,0,.58,1)",    qi: true,  use: "Entrances." },
-  "easing-in":     { cubic: "cubic-bezier(.42,0,1,1)",    qi: true,  use: "Exits." },
-  "easing-linear": { cubic: "linear",                     qi: true,  use: "Non-physical motion only." },
-  "easing-settle": { cubic: "cubic-bezier(.34,1.4,.64,1)", qi: false, use: "Arrival coming to rest. Overshoots once." }
+window.DUR = {
+  "stagger-tight":      { ms:60,  u:"Sibling offset only, never across a vertical hierarchy." },
+  "duration-instant":   { ms:100, u:"Anything finger-caused. Micro-feedback such as a button press." },
+  "duration-fast":      { ms:200, u:"Small elements. Chips, row entrances, icon swaps." },
+  "duration-moderate":  { ms:300, u:"Larger surfaces, roughly half the phone width or a third of its height and up." },
+  "duration-slow":      { ms:500, u:"A single element carrying a stage on its own, where slowness reads as composure." },
+  "duration-deliberate":{ ms:700, u:"Unused so far. Guidelines will come as more journeys are delighted." }
 };
+
+window.EAS = {
+  "ease-out":    { c:"cubic-bezier(0,0,.58,1)",   d:"Entrances. Decelerates into place. The default." },
+  "ease-in":     { c:"cubic-bezier(.42,0,1,1)",   d:"Exits. Accelerates away." },
+  "ease-in-out": { c:"cubic-bezier(.42,0,.58,1)", d:"Motion that both starts and ends on screen." },
+  "linear":      { c:"cubic-bezier(0,0,1,1)",     d:"Non-physical motion only. Nothing with mass moves at a constant speed." },
+  "ease-settle": { c:"cubic-bezier(.34,1.4,.64,1)",
+                   d:"Arrival. Something coming to rest after being placed." }
+};
+function tokVal(t){ return DUR[t] ? DUR[t].ms + "ms" : EAS[t] ? EAS[t].c : ""; }
 
 </script>
 <script>
-/* patterns.js
-   Motion patterns. Journey-agnostic: nothing here names a screen or a journey.
-   To add a pattern, copy a block and change it. Do not touch any .js outside src/data.
+/* patterns.js — motion for layout elements: lists, surfaces, text, taps.
+   Every entry here is valid Qi motion. The framework decides which ones
+   apply to a given element at a given stage; nothing invalid is ever offered.
 
-   Each pattern needs:
-     name     display name
-     tokens   token ids from tokens.js
-     dials    the four dials, written as concrete values not adjectives
-     plain    what happens, start state to end state
-     why      one line per motion principle. Leave "" for neutral.
-     never    the guardrail. Leave "" if none applies.
-*/
+   v = the four dial scores. Amplitude 1-3, Duration 1-4, Character 1-3,
+   Choreography 1-3. They add up to the motion volume, 4 quietest to 13
+   loudest, which is what gets compared against the stage target. */
 
-window.PATTERNS = {
-  "surface-rise": { name:"Surface Rise", tokens:["duration-moderate","easing-out"],
-    curve: {
-      quiet: { Amplitude:"Enters from below the edge, travels its own height", Duration:"300ms", ms:300 },
-      mid:   { Amplitude:"Enters from below the edge, travels its own height", Duration:"300ms", ms:300 },
-      peak:  { Amplitude:"Enters from below the edge, travels its own height", Duration:"500ms", ms:500,
-               note:"Slower at the peak so the surface lands with weight." } },
-    dials:{ Amplitude:"Enters from below the screen edge, travels its own height", Duration:"300ms",
-            Character:"Ease-out, decelerating into place", Choreography:"The whole surface and its contents move as one" },
-    plain:"Starts fully below the bottom edge, slides up until its top edge reaches its resting position, and stops without bouncing.",
-    why:{ nat:"A large surface takes the longer duration, so it reads as having weight.",
-          fun:"Sliding says the panel sits on top and can be dismissed back down.", exp:"" },
-    never:"Two surfaces of similar size must use the same timing." },
+window.PAT = {
+  "cascade": { name:"Arrive In Sequence", kind:"list",
+    plain:"Each item rises 12px and fades in, 60ms after the one above it.",
+    tokens:["duration-fast","ease-out","stagger-tight"], ms:200, e:"ease-out", st:60,
+    v:{ a:2, d:2, c:2, o:3 },
+    dials:{ Amplitude:"Rises 12px, fades 0 to 100%", Duration:"200ms",
+            Character:"Ease-out, decelerating into place", Choreography:"Staggered, 60ms apart" },
+    tests:{ nat:"", fun:"The offset makes them read as separate items, so people can scan while it is still arriving.",
+            exp:"A short offset reads as composure. A long one shows off." } },
 
-  "cascade": { name:"Cascade", tokens:["duration-fast","easing-out","stagger-tight"],
-    curve: {
-      quiet: { Amplitude:"Each item rises 8px and fades from 0 to 100%", Duration:"200ms per item",
-               Choreography:"Each item starts 40ms after the one above it", ms:200, stagger:40,
-               note:"Tighter and shorter, because this stage should not pull focus." },
-      mid:   { Amplitude:"Each item rises 12px and fades from 0 to 100%", Duration:"200ms per item",
-               Choreography:"Each item starts 60ms after the one above it", ms:200, stagger:60 },
-      peak:  { Amplitude:"Each item rises 16px and fades from 0 to 100%", Duration:"300ms per item",
-               Choreography:"Each item starts 80ms after the one above it", ms:300, stagger:80,
-               note:"Wider offset at the peak so the order of the verdict is legible." } },
-    dials:{ Amplitude:"Each item rises 12px and fades from 0 to 100%", Duration:"200ms per item",
-            Character:"Ease-out, decelerating into place", Choreography:"Each item starts 60ms after the one above it" },
-    plain:"Items start 12px below their resting position at 0% opacity. Each one rises into place and fades in, 60ms apart, top to bottom.",
-    why:{ nat:"", fun:"The offset makes them read as separate items, so people can scan while it is still arriving.",
-          exp:"A short offset reads as composure. A long one shows off." },
-    never:"Only stagger siblings. Never a parent and its children." },
+  "group-fade": { name:"Arrive Together", kind:"list",
+    plain:"The whole group rises 8px and fades in as one block.",
+    tokens:["duration-fast","ease-out"], ms:200, e:"ease-out",
+    v:{ a:1, d:2, c:2, o:2 },
+    dials:{ Amplitude:"Rises 8px, fades 0 to 100%", Duration:"200ms",
+            Character:"Ease-out, decelerating into place", Choreography:"One group, moving as one" },
+    tests:{ nat:"", fun:"Reads as one object. Right when the card matters more than the rows inside it.",
+            exp:"" } },
 
-  "settle": { name:"Settle", tokens:["duration-moderate","easing-settle"],
-    curve: {
-      quiet: { Amplitude:"Scales from 96% to 101% to 100%", Duration:"200ms", ms:200,
-               note:"Barely overshoots. At a quiet stage this is acknowledgement, not celebration." },
-      mid:   { Amplitude:"Scales from 92% to 104% to 100%", Duration:"300ms", ms:300 },
-      peak:  { Amplitude:"Scales from 90% to 106% to 100%", Duration:"300ms", ms:300,
-               note:"The fullest overshoot in the system. Once per journey." } },
-    dials:{ Amplitude:"Scales from 92% to 104% to 100%", Duration:"300ms",
-            Character:"Ease-settle, overshoots once then rests", Choreography:"One element on its own" },
-    plain:"Starts at 92% scale, grows past full size to 104%, then eases back to 100%. Opacity stays at 100% throughout.",
-    why:{ nat:"Mimics a physical object settling after being placed.",
-          fun:"Confirms something worked at the moment of doubt, without a status line.",
-          exp:"Reads as a breath released. Reassurance, not celebration." },
-    never:"Never on anything that failed. The overshoot reads as pleased." },
-
-  "container-transform": { name:"Container Transform", tokens:["duration-fast","easing-out"],
-    curve: {
-      quiet: { Amplitude:"Moves and resizes between two fixed positions", Duration:"200ms", ms:200 },
-      mid:   { Amplitude:"Moves and resizes between two fixed positions", Duration:"200ms", ms:200 },
-      peak:  { Amplitude:"Moves and resizes between two fixed positions", Duration:"300ms", ms:300,
-               note:"Slightly slower at the peak so the transformation is followable." } },
-    dials:{ Amplitude:"Moves and resizes between two fixed positions", Duration:"200ms",
-            Character:"Ease-out, decelerating into place", Choreography:"Container and contents move together" },
-    plain:"The element travels from its start position and size to its end position and size in one continuous move. It stays at 100% opacity the entire time.",
-    why:{ nat:"Nothing appears from nowhere.",
-          fun:"People track it as the same object. Fading out and in says it was replaced.", exp:"" },
-    never:"Never fade out and fade in as a shortcut." },
-
-  "single-rise": { name:"Single Rise", tokens:["duration-slow","easing-out"],
-    curve: {
-      quiet: { Amplitude:"Rises 10px and fades from 0 to 100%", Duration:"300ms", ms:300,
-               note:"Shortened. A 500ms rise in a quiet stage reads as lag, not composure." },
-      mid:   { Amplitude:"Rises 16px and fades from 0 to 100%", Duration:"500ms", ms:500 },
-      peak:  { Amplitude:"Rises 24px and fades from 0 to 100%", Duration:"500ms", ms:500,
-               note:"The longest single move in the journey." } },
-    dials:{ Amplitude:"Rises 16px and fades from 0 to 100%", Duration:"500ms",
+  "single-rise": { name:"Rise Into Place", kind:"single",
+    plain:"Rises 16px and fades from 0 to 100%.",
+    tokens:["duration-slow","ease-out"], ms:500, e:"ease-out",
+    v:{ a:2, d:4, c:2, o:1 },
+    dials:{ Amplitude:"Rises 16px, fades 0 to 100%", Duration:"500ms",
             Character:"Ease-out, decelerating into place", Choreography:"One element, nothing else moving" },
-    plain:"Starts 16px below its resting position at 0% opacity, then rises and fades in over half a second while the rest of the screen stays still.",
-    why:{ nat:"Slow and decelerating is how something heavy comes to rest.", fun:"",
-          exp:"Slow reads as composure. The same timing later in a journey reads as lag." },
-    never:"Once per journey only." },
+    tests:{ nat:"Slow and decelerating is how something with weight comes to rest.", fun:"",
+            exp:"A single element carrying a moment on its own. Slowness reads as composure." } },
 
-  "tap-response": { name:"Tap Response", tokens:["duration-instant","easing-out"],
-    curveFixed: "Never changes with the curve. Response to touch is a constant, not a volume.",
-    dials:{ Amplitude:"Scales from 100% to 97% on press, back to 100% on release", Duration:"100ms each way",
-            Character:"Ease-out", Choreography:"One element on its own" },
-    plain:"On finger down it shrinks to 97%. On finger up it returns to 100%. No opacity change, no movement.",
-    why:{ nat:"", fun:"Anything caused by a finger must answer immediately. Delay reads as the app not hearing you.", exp:"" },
-    never:"Never slower than 100ms." },
+  "settle": { name:"Settle Into Place", kind:"single",
+    plain:"Scales from 92% past full size to 104%, then eases back to 100%.",
+    tokens:["duration-moderate","ease-settle"], ms:300, e:"ease-settle",
+    v:{ a:2, d:3, c:3, o:1 },
+    dials:{ Amplitude:"Scales 92% to 104% to 100%", Duration:"300ms",
+            Character:"Ease-settle, overshoots once then rests", Choreography:"One element on its own" },
+    tests:{ nat:"Mimics a physical object settling after being placed.",
+            fun:"Confirms something worked at the exact moment of doubt, without a status line.",
+            exp:"Reads as a breath released. Reassurance, not celebration." } },
 
-  "progressive-reveal": { name:"Progressive Reveal", tokens:["duration-fast","easing-linear"],
-    curveFixed: "Never changes with the curve. Reading speed is not a stylistic choice.",
-    dials:{ Amplitude:"Each phrase fades from 0 to 100%, no movement", Duration:"200ms per phrase",
-            Character:"Linear, constant speed", Choreography:"Phrase by phrase, in reading order" },
-    plain:"Text arrives in phrases, not letters. Each phrase fades in over 200ms with no movement, in the order it would be read.",
-    why:{ nat:"", fun:"Matches reading speed and doubles as loading feedback.", exp:"" },
-    never:"Never letter by letter." },
+  "quiet-fade": { name:"Fade Up", kind:"single",
+    plain:"Fades from 0 to 100% with no movement.",
+    tokens:["duration-fast","ease-in-out"], ms:200, e:"ease-in-out",
+    v:{ a:1, d:2, c:2, o:1 },
+    dials:{ Amplitude:"Fades 0 to 100%, no movement", Duration:"200ms",
+            Character:"Ease-in-out, starts and ends on screen", Choreography:"One element on its own" },
+    tests:{ nat:"", fun:"", exp:"The quietest way to bring something in. Nothing moves, so nothing pulls the eye." } },
 
-  "ambient-loop": { name:"Ambient Loop", tokens:["easing-linear"],
-    curveFixed: "Never changes with the curve. Waiting reads the same wherever it happens.",
-    dials:{ Amplitude:"A highlight sweeps across the full width", Duration:"2200ms per cycle, repeating",
-            Character:"Linear, constant speed", Choreography:"One element at a time" },
-    plain:"A soft highlight travels from the left edge to the right edge of the active item and repeats. Nothing moves position or changes size.",
-    why:{ nat:"Linear only. Nothing with weight moves at a constant speed.",
-          fun:"Shows what is live now, without claiming to know how long is left.",
-          exp:"Keep the cycle slow. Fast reads as frantic." },
-    never:"Never fake progress." },
-
-  "stroke-in": { name:"Stroke In", tokens:["duration-moderate","easing-out"],
-    curveFixed: "Never changes with the curve. A completion mark is a fact, not a flourish.",
-    dials:{ Amplitude:"The path draws from 0% to 100% of its length", Duration:"300ms",
+  "stroke-in": { name:"Draw Itself In", kind:"icon",
+    plain:"The path draws from 0 to 100% of its length over 300ms.",
+    tokens:["duration-moderate","ease-out"], ms:300, e:"ease-out",
+    v:{ a:2, d:3, c:2, o:1 },
+    dials:{ Amplitude:"Path draws 0 to 100% of its length", Duration:"300ms",
             Character:"Ease-out, decelerating to the end of the stroke", Choreography:"One path, drawn once" },
-    plain:"The line starts invisible and draws itself from its start point to its end point over 300ms. Nothing scales or moves.",
-    why:{ nat:"Drawing follows the shape, so it reads as being made rather than switched on.",
-          fun:"Takes just long enough to be noticed at the moment something completes.", exp:"" },
-    never:"" },
+    tests:{ nat:"Drawing follows the shape, so it reads as being made rather than switched on.",
+            fun:"Takes just long enough to be noticed at the moment something completes.", exp:"" } },
 
-  "recede": { name:"Recede", tokens:["duration-fast","easing-in"],
-    curve: {
-      quiet: { Amplitude:"Drops 6px and fades from 100% to 50%", Duration:"200ms", ms:200 },
-      mid:   { Amplitude:"Drops 8px and fades from 100% to 40%", Duration:"200ms", ms:200 },
-      peak:  { Amplitude:"Drops 8px and fades from 100% to 40%", Duration:"200ms", ms:200,
-               note:"Unchanged at the peak. Things leaving should never compete with the moment." } },
-    dials:{ Amplitude:"Drops 8px and fades from 100% to 40%", Duration:"200ms",
-            Character:"Ease-in, accelerating away", Choreography:"Each item 60ms after the one before" },
-    plain:"Finished items drop 8px and fade to 40% opacity. They stay on screen at reduced weight rather than disappearing.",
-    why:{ nat:"Accelerating away is how something leaves.",
-          fun:"Moves attention onto what is next without deleting the history.", exp:"" },
-    never:"Never remove it entirely if the user might check it." },
+  "icon-settle": { name:"Pop Into Place", kind:"icon",
+    plain:"Scales from 88% past full size to 106%, then eases back to 100%.",
+    tokens:["duration-moderate","ease-settle"], ms:300, e:"ease-settle",
+    v:{ a:3, d:3, c:3, o:1 },
+    dials:{ Amplitude:"Scales 88% to 106% to 100%", Duration:"300ms",
+            Character:"Ease-settle, overshoots once then rests", Choreography:"One element on its own" },
+    tests:{ nat:"An object arriving and coming to rest, the way something set down behaves.",
+            fun:"", exp:"More personality than a fade, without becoming playful." } },
 
-  "none": { name:"No Motion", tokens:[],
-    dials:{ Amplitude:"None", Duration:"None", Character:"None", Choreography:"None" },
-    plain:"This element holds still while the rest of the moment moves.",
-    why:{ nat:"", fun:"Stillness is what makes the moving parts readable.",
-          exp:"Silence here is deliberate, not an oversight." },
-    never:"" }
+  "icon-fade": { name:"Fade In", kind:"icon",
+    plain:"Fades from 0 to 100% with no movement or scale.",
+    tokens:["duration-fast","ease-in-out"], ms:200, e:"ease-in-out",
+    v:{ a:1, d:2, c:2, o:1 },
+    dials:{ Amplitude:"Fades 0 to 100%", Duration:"200ms",
+            Character:"Ease-in-out, starts and ends on screen", Choreography:"One element on its own" },
+    tests:{ nat:"", fun:"", exp:"For an icon that supports rather than announces." } },
+
+  "sheet-rise": { name:"Rise From The Bottom", kind:"surface", qi:"drawer-bottom-sheet",
+    plain:"Slides up from below the screen edge and stops.",
+    tokens:["duration-moderate","ease-out"], ms:300, e:"ease-out",
+    v:{ a:3, d:3, c:2, o:2 },
+    dials:{ Amplitude:"Enters from below the edge, travels its own height", Duration:"300ms",
+            Character:"Ease-out, decelerating into place", Choreography:"Surface and contents move as one" },
+    tests:{ nat:"A large surface takes the longer duration, so it reads as having weight.",
+            fun:"Says the surface sits on top and can be dismissed back down.", exp:"" } },
+
+  "surface-fade": { name:"Fade In Place", kind:"surface", qi:"surface-fade",
+    plain:"Fades in where it already is, no movement.",
+    tokens:["duration-moderate","ease-in-out"], ms:300, e:"ease-in-out",
+    v:{ a:1, d:3, c:2, o:2 },
+    dials:{ Amplitude:"Fades 0 to 100%, no movement", Duration:"300ms",
+            Character:"Ease-in-out, starts and ends on screen", Choreography:"Surface and contents move as one" },
+    tests:{ nat:"", fun:"For surfaces that interrupt rather than arrive. Dialogs and alerts.", exp:"" } },
+
+  "ambient-loop": { name:"Breathe While Active", kind:"loading",
+    plain:"A soft sheen sweeps across it and repeats every 2200ms.",
+    tokens:["linear"], ms:2200, e:"linear",
+    v:{ a:2, d:2, c:1, o:1 },
+    dials:{ Amplitude:"Sheen sweeps the full width", Duration:"2200ms per cycle, repeating",
+            Character:"Linear, constant speed", Choreography:"One element at a time" },
+    tests:{ nat:"Linear only. Nothing with mass moves at a constant speed, so it reads as non-physical.",
+            fun:"Shows what is live now, without claiming to know how long is left.",
+            exp:"Keep the cycle slow. Fast reads as frantic." } },
+
+  "progressive-reveal": { name:"Appear Phrase By Phrase", kind:"text",
+    plain:"Text arrives one phrase at a time, 200ms each, no movement.",
+    tokens:["duration-fast","linear"], ms:200, e:"linear",
+    v:{ a:1, d:2, c:1, o:2 },
+    dials:{ Amplitude:"Each phrase fades 0 to 100%", Duration:"200ms per phrase",
+            Character:"Linear, constant speed", Choreography:"Phrase by phrase, in reading order" },
+    tests:{ nat:"", fun:"Matches reading speed and doubles as loading feedback.", exp:"" } },
+
+  "recede": { name:"Fall Back", kind:"leaving",
+    plain:"Drops 8px and fades to 40%, 60ms apart.",
+    tokens:["duration-fast","ease-in","stagger-tight"], ms:200, e:"ease-in", st:60,
+    v:{ a:1, d:2, c:2, o:3 },
+    dials:{ Amplitude:"Drops 8px, fades 100% to 40%", Duration:"200ms",
+            Character:"Ease-in, accelerating away", Choreography:"Staggered, 60ms apart" },
+    tests:{ nat:"Accelerating away is how something leaves. Decelerating would read as arriving.",
+            fun:"Moves attention onto what is next without deleting the history.", exp:"" } },
+
+  "dim": { name:"Dim In Place", kind:"leaving",
+    plain:"Fades to 40% with no movement.",
+    tokens:["duration-fast","ease-in-out"], ms:200, e:"ease-in-out",
+    v:{ a:1, d:2, c:2, o:2 },
+    dials:{ Amplitude:"Fades 100% to 40%, no movement", Duration:"200ms",
+            Character:"Ease-in-out, starts and ends on screen", Choreography:"One group, moving as one" },
+    tests:{ nat:"", fun:"Quieter than falling back. Right when the list should stay stable.", exp:"" } },
+
+  "tap-response": { name:"Press Response", kind:"tap",
+    plain:"Scales to 97% on finger down, back to 100% on finger up.",
+    tokens:["duration-instant","ease-out"], ms:100, e:"ease-out",
+    v:{ a:1, d:1, c:2, o:1 },
+    dials:{ Amplitude:"Scales 100% to 97%", Duration:"100ms each way",
+            Character:"Ease-out, decelerating into place", Choreography:"One element on its own" },
+    tests:{ nat:"", fun:"Anything finger-caused. Micro-feedback at the moment of the press.", exp:"" } }
 };
 
 </script>
 <script>
-/* journeys.js
-   One entry per journey. This is the file to edit when adding a new journey.
+/* verbs.js — motion for icons.
+   An icon's motion depends on what it depicts, which cannot be read from
+   its size. These are the whole vocabulary. A model may pick one and name
+   the sub-part it applies to. It never picks a duration, easing or token.
 
-   h is relative motion volume, 0 to 1. It is relative within this journey only:
-   a peak here is not the same loudness as a peak in another journey.
+   track = the Figma Motion property track for applyManualKeyframeTrack.
+   needs = validated against the exported SVG before anything is shown:
+           "stroke"        the icon must have a stroked path
+           "second-state"  a second icon must be picked to swap to
+           "in-progress"   the moment must actually be loading */
 
-   Shape rule: open moderately high, drop to the quietest point while the user
-   is working, rise to a single peak where they commit. No tail after the peak.
+window.VERBS = {
+  "fade":   { name:"Fade", purpose:"enter & exit", track:"OPACITY",
+    plain:"Fades from 0 to 100% with no movement.",
+    tokens:["duration-fast","ease-in-out"], ms:200, e:"ease-in-out",
+    v:{a:1,d:2,c:2,o:1}, needs:null, cont:false,
+    never:"", tests:{ nat:"", fun:"", exp:"For an icon that supports rather than announces." } },
 
-   match is optional. Words that suggest a frame belongs to this stage.
-   Used when there is no API key, and as a hint to Claude when there is one. */
+  "drift":  { name:"Drift In", purpose:"enter & exit", track:"TRANSLATION_Y",
+    plain:"Enters 8px from one edge and fades in.",
+    tokens:["duration-fast","ease-out"], ms:200, e:"ease-out",
+    v:{a:2,d:2,c:2,o:1}, needs:null, cont:false,
+    never:"One direction only. Do not combine with a rotation.",
+    tests:{ nat:"", fun:"The direction can carry meaning: down from a header, up from a form.", exp:"" } },
 
-window.JOURNEYS = {
-  assistant: {
-    name: "AIA+ AI Assistant",
-    stages: [
-      { id: "Welcome", h: .74, plain: "The assistant introduces itself",
-        match: ["welcome", "how can i help", "entry", "home", "intro", "start"] },
-      { id: "Ask",     h: .12, plain: "The user gives information",
-        match: ["ask", "compose", "input", "keyboard", "type", "prompt"] },
-      { id: "Await",   h: .34, plain: "The system is working",
-        match: ["think", "process", "loading", "reason", "search"] },
-      { id: "Answer",  h: .58, plain: "The result comes back",
-        match: ["answer", "response", "result", "summary", "shortlist", "option"] },
-      { id: "Confirm", h: 1,   plain: "The user commits and it is done", lead: true,
-        match: ["confirm", "submit", "booked", "success", "complete", "done"] }
-    ]
-  },
+  "draw":   { name:"Draw", purpose:"masking", track:"PATH_LENGTH",
+    plain:"The path draws itself from 0 to 100% of its length.",
+    tokens:["duration-moderate","ease-out"], ms:300, e:"ease-out",
+    v:{a:2,d:3,c:2,o:1}, needs:"stroke", cont:false,
+    never:"Only on a stroked path. A filled shape has nothing to draw.",
+    tests:{ nat:"Drawing follows the shape, so it reads as being made rather than switched on.",
+            fun:"Takes just long enough to be noticed at the moment something completes.", exp:"" } },
 
-  bookDoctorAI: {
-    name: "Find and book a doctor, with AI",
-    stages: [
-      { id: "Welcome",   h: .74, plain: "The assistant offers to help", 
-        match: ["how can i help", "ask ai", "assistant", "entry", "welcome"] },
-      { id: "Ask",       h: .12, plain: "The user says what they need",
-        match: ["compose", "keyboard", "type", "input", "prompt"] },
-      { id: "Await",     h: .34, plain: "The assistant searches and reasons",
-        match: ["think", "reason", "locating", "evaluating", "identifying", "searching"] },
-      { id: "Shortlist", h: .58, plain: "Doctors come back with a map",
-        match: ["shortlist", "doctor", "map", "result", "detail", "book doctor"] },
-      { id: "Confirm",   h: 1,   plain: "The appointment is booked", lead: true,
-        match: ["booked", "confirm", "consultation", "appointment", "success"] }
-    ]
-  },
+  "reveal": { name:"Reveal", purpose:"masking", track:"MASK_POSITION",
+    plain:"A mask wipes across it, uncovering it in one direction.",
+    tokens:["duration-moderate","ease-out"], ms:300, e:"ease-out",
+    v:{a:2,d:3,c:2,o:1}, needs:null, cont:false,
+    never:"One direction, one pass. Never a wipe back and forth.",
+    tests:{ nat:"", fun:"Works on filled icons where Draw cannot, because there is no stroke to follow.", exp:"" } },
 
-  findDoctorManual: {
-    name: "Find and book a doctor, manually",
-    stages: [
-      { id: "Entry",   h: .68, plain: "The user opens find a doctor",
-        match: ["welcome", "home", "healthcare", "quick access", "entry"] },
-      { id: "Filter",  h: .12, plain: "The user sets what they are looking for",
-        match: ["what are you looking for", "filter", "sorting", "select", "location", "search"] },
-      { id: "Results", h: .40, plain: "Doctors are listed and mapped",
-        match: ["find doctors", "result", "map", "pre-selected", "list"] },
-      { id: "Detail",  h: .56, plain: "The user reads one doctor and picks a slot",
-        match: ["doctor details", "book doctor", "visit date", "select the visit"] },
-      { id: "Confirm", h: 1,   plain: "The booking is confirmed", lead: true,
-        match: ["check and confirm", "you've booked", "booked", "confirm", "success"] }
-    ]
-  },
+  "swap":   { name:"Swap", purpose:"container transform", track:"OPACITY",
+    plain:"One icon becomes another, staying in place the whole way.",
+    tokens:["duration-fast","ease-in-out"], ms:200, e:"ease-in-out",
+    v:{a:2,d:2,c:2,o:2}, needs:"second-state", cont:false,
+    never:"Never fade out to nothing and fade in. The two states overlap.",
+    tests:{ nat:"", fun:"Keeps object permanence, so people read it as the same thing changing state.", exp:"" } },
 
-  claim: {
-    name: "Submit a claim",
-    stages: [
-      { id: "Start",   h: .66, plain: "The user opens the claim form",
-        match: ["start", "home", "claim", "entry"] },
-      { id: "Fill",    h: .12, plain: "The user enters details",
-        match: ["fill", "form", "input", "details", "enter"] },
-      { id: "Upload",  h: .32, plain: "The user attaches documents",
-        match: ["upload", "attach", "receipt", "document", "photo"] },
-      { id: "Review",  h: .56, plain: "The user checks before sending",
-        match: ["review", "summary", "check", "before"] },
-      { id: "Confirm", h: 1,   plain: "The claim is submitted", lead: true,
-        match: ["confirm", "submit", "success", "submitted", "done"] }
-    ]
-  },
+  "rotate": { name:"Rotate", purpose:"feedback", track:"ROTATION",
+    plain:"Rotates into position and settles at rest.",
+    tokens:["duration-moderate","ease-settle"], ms:300, e:"ease-settle",
+    v:{a:2,d:3,c:3,o:1}, needs:null, cont:false,
+    never:"One rotation only. A full turn reads as loading, not as arrival.",
+    tests:{ nat:"The overshoot reads as momentum being absorbed, not as a bounce.",
+            fun:"", exp:"Carries more personality than a fade without becoming playful." } },
 
-  policy: {
-    name: "View policy details",
-    stages: [
-      { id: "Enter",  h: .68, plain: "The user opens the policy",
-        match: ["enter", "home", "policy", "overview"] },
-      { id: "Browse", h: .14, plain: "The user scans sections",
-        match: ["browse", "list", "sections", "scan"] },
-      { id: "Detail", h: .42, plain: "The user opens one section",
-        match: ["detail", "coverage", "benefit", "document"] },
-      { id: "Act",    h: 1,   plain: "The user does something with it", lead: true,
-        match: ["act", "download", "share", "claim", "contact"] }
-    ]
-  },
+  "pop":    { name:"Pop", purpose:"feedback", track:"SCALE",
+    plain:"Scales up past full size, then eases back to 100%.",
+    tokens:["duration-moderate","ease-settle"], ms:300, e:"ease-settle",
+    v:{a:3,d:3,c:3,o:1}, needs:null, cont:false,
+    never:"Once per journey. It is the loudest thing an icon can do.",
+    tests:{ nat:"An object arriving and coming to rest, the way something set down behaves.",
+            fun:"", exp:"The fullest expression available to a single icon." } },
 
-  vitality: {
-    name: "Vitality assessment",
-    stages: [
-      { id: "Welcome", h: .72, plain: "The assessment is introduced",
-        match: ["welcome", "intro", "start", "begin"] },
-      { id: "Assess",  h: .12, plain: "The user answers questions",
-        match: ["assess", "question", "step", "answer", "form"] },
-      { id: "Await",   h: .36, plain: "The score is calculated",
-        match: ["calculat", "loading", "processing", "thinking"] },
-      { id: "Result",  h: 1,   plain: "The user sees their score", lead: true,
-        match: ["result", "score", "your", "outcome"] }
-    ]
-  }
+  "sheen":  { name:"Sheen", purpose:"loading", track:"MASK_POSITION",
+    plain:"A soft highlight sweeps across it and repeats every 2200ms.",
+    tokens:["linear"], ms:2200, e:"linear",
+    v:{a:2,d:2,c:1,o:1}, needs:"in-progress", cont:true,
+    never:"Never fake progress. It shows something is live, not how far along it is.",
+    tests:{ nat:"Linear only. Nothing with mass moves at a constant speed.",
+            fun:"Shows what is live now, without claiming to know how long is left.", exp:"" } },
+
+  "pulse":  { name:"Pulse", purpose:"floating objects", track:"SCALE",
+    plain:"Scales gently between 100% and 104% and back, repeating.",
+    tokens:["linear"], ms:2200, e:"linear",
+    v:{a:1,d:2,c:1,o:1}, needs:"in-progress", cont:true,
+    never:"Keep the cycle slow. Fast reads as an alarm.",
+    tests:{ nat:"", fun:"Marks something as live without moving it out of place.",
+            exp:"Quieter than a sheen. Right for health and wellness contexts." } }
 };
 
-/* GOALS: how the journey should leave someone feeling. Multi-select. */
-window.GOALS = [
-  { v: "reassured",  l: "Reassured",  sub: "Nothing went wrong, and they know it" },
-  { v: "incontrol",  l: "In control", sub: "They understand what happens next" },
-  { v: "relieved",   l: "Relieved",   sub: "Something difficult is now handled" },
-  { v: "recognised", l: "Recognised", sub: "Their effort was seen" },
-  { v: "confident",  l: "Confident",  sub: "They trust the result is correct" }
+</script>
+<script>
+/* stages.js — the five moments, and which motions apply at each.
+   Welcome, Find, Act, Confirm, Complete. Journey-agnostic.
+
+   opts lists valid patterns per element kind at that stage. Order does not
+   matter: the engine sorts by distance from the stage's volume target. */
+
+window.STAGES = {
+  Welcome: { label:"A Welcome", plain:"The journey opens and something introduces itself.",
+    can:[["One element can take the slow duration","Nothing is competing yet, so duration-slow reads as composure rather than lag."],
+         ["Groups can arrive in sequence","Chips and cards arriving in order tell people what their choices are."]],
+    cannot:[["Do not peak here","The strongest gesture belongs at Confirm. Two peaks flatten into a plateau."]],
+    opts:{ list:["cascade","group-fade"], single:["single-rise","quiet-fade"],
+           surface:["sheet-rise","surface-fade"], text:["quiet-fade","single-rise"], icon:["icon-settle","icon-fade"],
+           loading:["ambient-loop"], leaving:["dim"], tap:["tap-response"] } },
+
+  Find: { label:"A Find moment", plain:"Someone is searching, filtering, or entering what is needed.",
+    quiet:"Someone is working. Motion here interrupts them.",
+    can:[["Standard component motion already covers most of this","Keyboard rise, drawer rise, field focus. You mostly need to not add anything."],
+         ["Confirmations can settle","An attachment docking is the one expressive beat this stage earns, because it answers a real moment of doubt."]],
+    cannot:[["Nothing at duration-slow","500ms mid-task reads as the app lagging, not as composure."]],
+    opts:{ list:["group-fade","cascade"], single:["settle","quiet-fade"],
+           surface:["sheet-rise","surface-fade"], text:["quiet-fade"], icon:["icon-fade","stroke-in"],
+           loading:["ambient-loop"], leaving:["dim"], tap:["tap-response"] } },
+
+  Act: { label:"An Act moment", plain:"Someone is choosing, reviewing, or committing to something.",
+    can:[["Rows can arrive in reading order","It stops people scanning a layout that is still assembling."],
+         ["Selection can respond immediately","duration-instant on anything finger-caused."]],
+    cannot:[["This is not the peak yet","Nothing is settled here. Save the strongest gesture for Confirm."]],
+    opts:{ list:["cascade","group-fade"], single:["quiet-fade","single-rise"],
+           surface:["sheet-rise","surface-fade"], text:["progressive-reveal","quiet-fade"], icon:["stroke-in","icon-fade"],
+           loading:["ambient-loop"], leaving:["dim","recede"], tap:["tap-response"] } },
+
+  Confirm: { label:"A Confirmation", plain:"The moment someone finds out where they stand.",
+    can:[["One gesture can carry this","The only place a single element should lead. Everything else supports it."],
+         ["ease-settle belongs here","Once per journey. Using it earlier is what stops it meaning anything."]],
+    cannot:[["Only one significant motion","Two elements competing for the moment reads as noise, not emphasis."]],
+    opts:{ list:["cascade","group-fade"], single:["settle","single-rise","quiet-fade"],
+           surface:["sheet-rise","surface-fade"], text:["single-rise","quiet-fade"], icon:["stroke-in","icon-settle","icon-fade"],
+           loading:["ambient-loop"], leaving:["dim"], tap:["tap-response"] } },
+
+  Complete: { label:"A Completion", plain:"The journey closes and someone is told what happens next.",
+    quiet:"The moment has landed. Anything loud here competes with what just happened.",
+    can:[["Follow-up can arrive late","Arriving after the outcome gives the verdict a beat of silence first."],
+         ["Groups can arrive together","Quieter than a sequence, which is right once the outcome is already read."]],
+    cannot:[["Do not repeat the peak","Confirm already carried it. A second strong gesture halves the first."]],
+    opts:{ list:["group-fade","cascade"], single:["quiet-fade"],
+           surface:["surface-fade","sheet-rise"], text:["quiet-fade","single-rise"], icon:["icon-fade","stroke-in"],
+           loading:["ambient-loop"], leaving:["dim","recede"], tap:["tap-response"] } }
+};
+var ORDER = ["Welcome","Find","Act","Confirm","Complete"];
+
+</script>
+<script>
+/* found.js — notes triggered by what is actually on the frame, as opposed
+   to the constant per-stage rules in stages.js. Each has a test that reads
+   the frame, a title, and a description. */
+
+window.FOUND = [
+  { test:function(f){ return f.els.some(function(e){ return e.t==="icon" && libFor(e.n); }); },
+    t:"An animated icon in the library covers one of these",
+    d:"Insert the component instead of building the motion. It carries its own timing, so it stays in step if the library changes." },
+  { test:function(f){ return f.els.some(function(e){ return e.sib>=3; }); },
+    t:"There is a repeating group here",
+    d:"Rows at the same level can arrive in sequence with stagger-tight. Never stagger a parent and its children." },
+  { test:function(f){ return f.els.some(function(e){ return e.f.loading; }); },
+    t:"Something is already looping",
+    d:"Use linear. Nothing with mass moves at a constant speed, so a loop reads as non-physical." },
+  { test:function(f){ return f.els.some(function(e){ return e.w>=360 || e.h>=280; }); },
+    t:"A large surface enters here",
+    d:"Roughly half the phone width or a third of its height and up takes duration-moderate." },
+  { test:function(f){ return f.els.some(function(e){ return e.f.tap; }); },
+    t:"There is a tap target here",
+    d:"Anything finger-caused answers at duration-instant. This one never changes with the stage." }
 ];
 
 </script>
 <script>
-/* icons.js
-   Icons in the Qi library that are already animated.
-   When a layer name matches, the plugin says "use this" instead of
-   specifying an animation to build.
+/* icons.js — animated components already in the Qi library.
+   key is the Figma component key, from the component's share link.
+   The plugin imports it with figma.importComponentByKeyAsync(key).
 
-   IMPORTANT: these five are placeholders. Replace `icon` with the real
-   component names from the Qi icon library before anyone relies on this. */
+   REPLACE THESE KEYS with the real ones before anyone relies on this. */
 
-window.ANIMATED_ICONS = [
-  { match: /check|tick|success|complete/i, icon: "ic-success-animated",
-    note: "Draws itself in. Same timing as Stroke In." },
-  { match: /spinner|loader|loading/i,      icon: "ic-loading-animated",
-    note: "Continuous. Already handles reduced motion." },
-  { match: /star|sparkle|shine/i,          icon: "ic-sparkle-animated",
-    note: "Brand sparkle, for assistant moments." },
-  { match: /heart|pulse|vitality/i,        icon: "ic-pulse-animated",
-    note: "Slow pulse for health and wellness." },
-  { match: /error|warning|alert/i,         icon: "ic-alert-animated",
-    note: "Single shake, no loop." }
+window.LIB_ICONS = [
+  { match:/check|tick|success|complete/i, name:"Success Check", key:"qi-ic-success-anim",
+    note:"Strokes in over 300ms. Carries its own motion as an animated component." },
+  { match:/spinner|loader|loading|sheen/i, name:"Loading Indicator", key:"qi-ic-loading-anim",
+    note:"Continuous. Already handles reduced motion." },
+  { match:/star|sparkle|shine/i, name:"Assistant Sparkle", key:"qi-ic-sparkle-anim",
+    note:"Brand sparkle for assistant moments." },
+  { match:/heart|pulse|vitality/i, name:"Vitality Pulse", key:"qi-ic-pulse-anim",
+    note:"Slow pulse for health and wellness." },
+  { match:/error|warning|alert/i, name:"Alert", key:"qi-ic-alert-anim",
+    note:"Single shake, no loop." }
 ];
+function libFor(n){ for(var i=0;i<LIB_ICONS.length;i++) if(LIB_ICONS[i].match.test(n)) return LIB_ICONS[i]; return null; }
 
 </script>
 <script>
-/* engine.js
-   The rules engine. No model calls happen here.
-
-   Two jobs:
-     pickPattern(element, stage)  ->  which pattern, and why
-     mapByName(frames, journey)   ->  which stage each frame belongs to,
-                                       used when there is no API key
-
-   Rule order matters. First match wins. To change behaviour, reorder or edit
-   the rules in pickPattern. Every rule returns a `note` explaining itself,
-   which is what the designer reads. If you add a rule, write the note too. */
+/* engine.js — all the rules. No model calls happen in this file.
+   If you want to change how the plugin decides something, it is in here.
+   If you want to change what it decides between, that is in src/data. */
 
 (function () {
+"use strict";
 
-  var FRAME_W = 375;   // reference phone width
-  var FRAME_H = 812;   // reference phone height
+var ORDER = ["Welcome","Find","Act","Confirm","Complete"];
 
-  function iconMatch(name) {
-    for (var i = 0; i < window.ANIMATED_ICONS.length; i++) {
-      if (window.ANIMATED_ICONS[i].match.test(name)) return window.ANIMATED_ICONS[i];
-    }
-    return null;
-  }
+/* ---------------------------------------------------------------- curve
+   Two parabolas meeting at the trough, easing down to a floor after the
+   peak. Generated rather than typed, so adding a stage cannot break the
+   shape. Both ends sit high, which is what makes it read as a U. */
+var SHAPE = { open:.88, trough:"Find", peak:"Confirm", floor:.82 };
 
-  function pickPattern(el, stage) {
-    var f = el.flags || {};
-    var quiet = stage.h < .35;
-    var wide = el.w / FRAME_W;
-    var tall = el.h / FRAME_H;
+function heights(){
+  var ti = ORDER.indexOf(SHAPE.trough), pi = ORDER.indexOf(SHAPE.peak), n = ORDER.length;
+  return ORDER.map(function (id, i) {
+    if (i <= ti) { var t = ti === 0 ? 0 : i / ti; return SHAPE.open * (1-t) * (1-t); }
+    if (i <= pi) { var u = (i-ti) / (pi-ti); return u * u; }
+    var v = (i-pi) / Math.max(1, n-1-pi);
+    return 1 - (1-SHAPE.floor) * (v*v);
+  });
+}
 
-    // 1. Never animate money. Silent rule, no lecture in the output.
-    if (f.money)
-      return { id: "none", note: "Held still so the figures stay steady while the rest of the moment moves." };
+/* The curve height, 0 to 1, converted to a motion volume target.
+   Volume runs 4 to 13. The constants below map the curve onto the range
+   the pattern library actually occupies: quietest pattern 5, loudest 10.
+   If you add patterns outside that range, retune these two numbers. */
+var VOL_FLOOR = 5, VOL_SPAN = 5;
+function targetFor(stage){
+  return Math.round(VOL_FLOOR + heights()[ORDER.indexOf(stage)] * VOL_SPAN);
+}
 
-    // 2. Finger-caused always answers instantly.
-    if (f.tap)
-      return { id: "tap-response", note: "Finger-caused, so it answers instantly." };
+/* -------------------------------------------------------------- volume */
+var VOL_MAX = { a:3, d:4, c:3, o:3 };
+function volumeOf(p){ return { a:p.v.a, d:p.v.d, c:p.v.c, o:p.v.o, total:p.v.a+p.v.d+p.v.c+p.v.o }; }
 
-    // 3. Already animated in the icon library. Use it, do not rebuild it.
-    var ic = (el.t === "icon") ? iconMatch(el.n) : null;
-    if (ic)
-      return { id: f.loading ? "ambient-loop" : "stroke-in", lib: ic,
-               note: "An animated icon for this already exists in the library." };
+/* ----------------------------------------------------------- diagnosis
+   Points accumulate per stage. Highest wins. Every rule records why, and
+   that reason is what the designer reads. If you add a rule, write the
+   reason too. Weights: a name match is 4, strong content evidence is 3-4,
+   weaker content evidence is 2. */
+function diagnose(fr){
+  var ev = [], sc = {}, n = (fr.name||"").toLowerCase();
+  ORDER.forEach(function(s){ sc[s] = 0; });
+  function add(s,p,w){ sc[s] += p; if (w) ev.push({ s:s, w:w }); }
 
-    // 4. Work in progress.
-    if (f.loading)
-      return { id: "ambient-loop", note: "Shows what is live without guessing how long is left." };
-    if (f.streaming)
-      return { id: "progressive-reveal", note: "Text arriving at reading speed." };
+  if (/welcome|home|intro|start|landing|how can i help/.test(n))
+    add("Welcome",4,"The frame name points at an opening.");
+  if (/find|search|filter|browse|select|upload|input|compose|receipt|attach|form/.test(n))
+    add("Find",4,"The frame name points at searching or entering something.");
+  if (/review|choose|book|detail|summary|check|act|option/.test(n))
+    add("Act",4,"The frame name points at choosing or reviewing.");
+  if (/confirm|success|booked|submitted|approved/.test(n))
+    add("Confirm",4,"The frame name points at a confirmation.");
+  if (/complete|done|next|thank|track|status/.test(n))
+    add("Complete",4,"The frame name points at the journey closing.");
+  if (/think|process|load|calculat|waiting/.test(n))
+    add("Act",3,"The frame name points at work in progress, which sits inside Act.");
 
-    // 5. Completion and departure.
-    if (f.completes)
-      return { id: "stroke-in", note: "Marks the moment something finishes." };
-    if (f.leaves)
-      return { id: "recede", note: "Moves attention off what is done." };
+  var tick=false, loop=false, list=false, btns=0, big=false, late=false;
+  (fr.els||[]).forEach(function(e){
+    if (e.f.completes) tick = true;
+    if (e.f.loading) loop = true;
+    if (e.sib >= 3) list = true;
+    if (e.f.tap) btns++;
+    if (e.f.late) late = true;
+    if (e.w >= 360 || e.h >= 280) big = true;
+    if (e.f.confirms) add("Find",2,"An attachment is being confirmed.");
+  });
+  if (tick && btns >= 1) add("Confirm",4,"A completion mark sits next to a single primary button.");
+  else if (tick)         add("Confirm",2,"There is a completion mark on this frame.");
+  if (loop)              add("Act",3,"Something is looping, so work is in progress.");
+  if (loop && list)      add("Act",2,"A repeating list next to a loop reads as a progress sequence.");
+  if (big && btns>=1 && !tick) add("Find",2,"A large surface with a button reads as input.");
+  if (list && !loop && !tick)  add("Act",2,"A repeating list with no loop reads as options to choose from.");
+  if (late)              add("Complete",3,"A follow-up link suggests the journey is closing.");
 
-    // 6. Siblings cascade. Read from how many layers share a name stem.
-    if (el.sib >= 2)
-      return { id: "cascade", note: el.sib + " layers at this level share a name, so they read as a list." };
+  var best = ORDER[0], top = -1, sec = -1;
+  ORDER.forEach(function(k){
+    if (sc[k] > top) { sec = top; top = sc[k]; best = k; }
+    else if (sc[k] > sec) sec = sc[k];
+  });
+  /* Confident only when the winner is strong AND clear of the runner-up.
+     Below either threshold the plugin asks rather than asserts. */
+  return { stage:best, sure: top >= 5 && (top-sec) >= 3, score:top, gap:top-sec,
+           evidence: ev.filter(function(e){ return e.s === best; }).map(function(e){ return e.w; }) };
+}
 
-    // 7. Size decides whether it is a surface or an element.
-    if (wide >= .9 || tall >= .3)
-      return { id: "surface-rise", note: "Covers most of the screen, so it enters as a surface." };
+/* ------------------------------------------------------------ grouping
+   Layers sharing a name stem move together, so they are presented as one
+   decision. Four rows called "Detail row" are one entry, not four. */
+function groups(fr){
+  var out = [], seen = {};
+  (fr.els||[]).forEach(function(el){
+    var stem = el.n.toLowerCase().replace(/[\s_-]*\d+$/,"").trim();
+    if (el.sib >= 2) { if (seen[stem]) return; seen[stem] = 1;
+      out.push({ key:stem, label:el.n, count:el.sib, el:el }); }
+    else out.push({ key:el.n, label:el.n, count:1, el:el });
+  });
+  return out;
+}
 
-    // 8. Confirmations settle.
-    if (f.confirms)
-      return { id: "settle", note: quiet
-        ? "Confirms an upload. Overshoot stays minimal because this stage is quiet."
-        : "Confirms an upload at the point of doubt." };
+function kindOf(el){
+  if (el.f.tap) return "tap";
+  if (el.f.loading) return "loading";
+  if (el.f.leaves) return "leaving";
+  if (el.sib >= 2) return "list";
+  if (el.t === "icon") return "icon";
+  if (el.w >= 360 || el.h >= 280) return "surface";
+  if (el.t === "text") return "text";
+  return "single";
+}
 
-    // 9. One thing alone on a loud stage can take the slow duration.
-    if (stage.lead && el.sib === 1 && wide > .5)
-      return { id: "single-rise", note: "Carries the peak of the journey on its own." };
+function libFor(name){
+  var L = window.LIB_ICONS;
+  for (var i=0;i<L.length;i++) if (L[i].match.test(name)) return L[i];
+  return null;
+}
+function hasStroke(svg){ return /stroke\s*=\s*"(?!none)/.test(svg||""); }
+function hasPart(svg, part){
+  if (!svg || !part) return false;
+  return svg.toLowerCase().indexOf(String(part).toLowerCase()) > -1;
+}
 
-    if (f.late)
-      return { id: "recede", note: "Arrives last, after the outcome has landed." };
+/* ------------------------------------------------------------- options
+   Icons draw from the verb library, everything else from the patterns.
+   Filtered by what the element can actually support, then ordered by how
+   close each one sits to what the curve asks for at this stage. */
+function optionsFor(g, stage){
+  var t = targetFor(stage);
+  var el = g.el;
 
-    // 10. Default.
-    return { id: "container-transform", note: "Changes form without leaving the screen." };
-  }
+  if (el.t === "icon") {
+    var lib = libFor(el.n);
+    if (lib) return { lib:lib, ids:[], target:t, icon:true };
 
-  /* Which band of the curve this stage sits in. This is what stops every
-     recommendation looking the same: the pattern is chosen by the element,
-     but its dials are set by where the stage sits. */
-  function bandOf(stage) {
-    if (stage.lead || stage.h >= .8) return "peak";
-    if (stage.h < .35) return "quiet";
-    return "mid";
-  }
-
-  /* Returns the pattern with its dials resolved for this stage. */
-  function resolve(pid, stage) {
-    var base = window.PATTERNS[pid];
-    var band = bandOf(stage);
-    if (!base.curve || !base.curve[band]) {
-      return { name: base.name, plain: base.plain, tokens: base.tokens, why: base.why,
-               never: base.never, dials: base.dials, band: band,
-               tuned: false, tuneNote: base.curveFixed || "", ms: null, stagger: null };
-    }
-    var c = base.curve[band];
-    var dials = {};
-    Object.keys(base.dials).forEach(function (k) { dials[k] = (k in c) ? c[k] : base.dials[k]; });
-    return { name: base.name, plain: base.plain, tokens: base.tokens, why: base.why,
-             never: base.never, dials: dials, band: band,
-             tuned: true, tuneNote: c.note || "", ms: c.ms || null, stagger: c.stagger || null };
-  }
-
-  function annotate(frame, stage) {
-    return frame.els.map(function (el) {
-      var r = pickPattern(el, stage);
-      return { el: el, pid: r.id, p: resolve(r.id, stage), note: r.note, lib: r.lib || null };
+    var V = window.VERBS, svg = el.svg || "";
+    var ids = Object.keys(V).filter(function(k){
+      var vb = V[k];
+      if (vb.needs === "stroke" && !hasStroke(svg)) return false;
+      if (vb.needs === "second-state" && !el.f.secondState) return false;
+      if (vb.needs === "in-progress" && !el.f.loading) return false;
+      if (vb.cont && !el.f.loading) return false;
+      return true;
     });
-  }
-
-  /* Name matching. Used when there is no API key, and as the fallback
-     if a model call fails. Duplicate names are resolved by position. */
-  function mapByName(frames, journey) {
-    var stages = journey.stages;
-    var nameCount = {};
-    frames.forEach(function (f) { nameCount[f.name] = (nameCount[f.name] || 0) + 1; });
-
-    return frames.map(function (f, i) {
-      var n = f.name.toLowerCase();
-      var hit = null;
-
-      // exact stage id in the name wins
-      stages.forEach(function (s) {
-        if (!hit && n.indexOf(s.id.toLowerCase()) > -1) hit = s;
-      });
-      // then the journey's own keyword list
-      if (!hit) {
-        stages.forEach(function (s) {
-          if (hit || !s.match) return;
-          for (var k = 0; k < s.match.length; k++) {
-            if (n.indexOf(s.match[k]) > -1) { hit = s; return; }
-          }
-        });
-      }
-
-      // A name that appears more than once cannot be trusted on its own.
-      var repeated = nameCount[f.name] > 1;
-      if (hit && !repeated)
-        return { i: i, stage: hit.id, sure: true, why: "the frame name matches this stage" };
-      if (hit && repeated)
-        return { i: i, stage: hit.id, sure: false,
-                 why: nameCount[f.name] + " frames share this name, so position was used to break the tie" };
-
-      var g = stages[Math.min(Math.floor(i / frames.length * stages.length), stages.length - 1)];
-      return { i: i, stage: g.id, sure: false, why: "guessed from position, the name says nothing" };
+    ids.sort(function(x,y){
+      return Math.abs(volumeOf(V[x]).total - t) - Math.abs(volumeOf(V[y]).total - t);
     });
+    return { ids: ids.slice(0,3), target:t, icon:true };
   }
 
-  window.ENGINE = {
-    bandOf: bandOf,
-    resolve: resolve,
-    pickPattern: pickPattern,
-    annotate: annotate,
-    mapByName: mapByName,
-    iconMatch: iconMatch
-  };
+  var P = window.PAT;
+  var pids = (window.STAGES[stage].opts[kindOf(el)] || ["quiet-fade"]).slice();
+  pids.sort(function(x,y){
+    return Math.abs(volumeOf(P[x]).total - t) - Math.abs(volumeOf(P[y]).total - t);
+  });
+  return { ids:pids, target:t, icon:false };
+}
+
+function motionOf(id){ return window.VERBS[id] || window.PAT[id]; }
+
+/* The one motion that stands out. The plugin decides this, it is not a
+   control. Nothing stands out at Find or Complete. */
+function mainMotionOf(fr, stage){
+  if (stage === "Find" || stage === "Complete") return null;
+  var gs = groups(fr), i;
+  for (i=0;i<gs.length;i++) if (gs[i].el.f.completes) return gs[i].key;
+  if (stage === "Confirm" || stage === "Welcome") {
+    for (i=0;i<gs.length;i++) if (gs[i].el.t === "icon") return gs[i].key;
+    for (i=0;i<gs.length;i++) if (kindOf(gs[i].el) === "single") return gs[i].key;
+  }
+  return null;
+}
+
+/* Conditional notes, triggered by what is on this frame. */
+function foundOn(fr){
+  return (window.FOUND || []).filter(function(r){ return r.test(fr); });
+}
+
+/* ------------------------------------------------------------- prompts */
+function promptFor(id, g, frameName, isMain){
+  var p = motionOf(id), DURt = window.DUR, EASt = window.EAS;
+  var d = p.tokens.filter(function(t){ return DURt[t] && t.indexOf("duration-") === 0; })[0];
+  var L = ["Animate " + g.label + (g.count>1 ? " (all "+g.count+")" : "") + " on " + frameName + ".",
+           p.plain];
+  L.push((p.ms >= 2000 ? "Continuous loop, "+p.ms+"ms per cycle" : p.ms+"ms"+(d?" ("+d+")":""))
+    + ", " + EASt[p.e].c + " (" + p.e + ").");
+  if (p.st) L.push(p.st + "ms between siblings (stagger-tight).");
+  if (p.qi) L.push("Matches the Qi " + p.qi + " transition.");
+  if (window.VERBS[id]) L.push("One unbroken movement, one property.");
+  L.push("Trigger on this layer only. Do not animate the frame or add a page transition.");
+  if (p.never) L.push(p.never);
+  if (isMain) L.push("This is the main motion on this frame. Nothing else should compete with it.");
+  return L.join(" ");
+}
+
+/* Figma Motion keyframes for a chosen motion. Durations are in SECONDS. */
+function keyframesFor(id){
+  var p = motionOf(id), EASt = window.EAS;
+  var secs = p.ms / 1000;
+  var m = /cubic-bezier\(([^)]+)\)/.exec(EASt[p.e].c);
+  var ease = m
+    ? { type:"CUSTOM_CUBIC_BEZIER", easingFunctionCubicBezier: (function(){
+        var n = m[1].split(",").map(Number);
+        return { x1:n[0], y1:n[1], x2:n[2], y2:n[3] };
+      })() }
+    : { type:"LINEAR" };
+
+  var track = window.VERBS[id] ? window.VERBS[id].track : null;
+  if (!track) {
+    if (/cascade|group-fade|single-rise|sheet-rise/.test(id)) track = "TRANSLATION_Y";
+    else if (/settle|tap-response/.test(id)) track = "SCALE";
+    else track = "OPACITY";
+  }
+  var from = 0, to = 0;
+  if (track === "TRANSLATION_Y") { from = id === "sheet-rise" ? 320 : id === "single-rise" ? 16 : 12; to = 0; }
+  else if (track === "SCALE")    { from = id === "tap-response" ? 0.97 : 0.92; to = 1; }
+  else if (track === "ROTATION") { from = -30; to = 0; }
+  else                           { from = 0; to = 1; }
+
+  return { track:track, durationSeconds:secs, stagger: p.st ? p.st/1000 : 0,
+           keyframes:[ { timelinePosition:0, value:from },
+                       { timelinePosition:secs, value:to, easing:ease } ] };
+}
+
+window.ENGINE = {
+  ORDER: ORDER, SHAPE: SHAPE, VOL_MAX: VOL_MAX,
+  heights: heights, targetFor: targetFor, volumeOf: volumeOf,
+  diagnose: diagnose, groups: groups, kindOf: kindOf,
+  optionsFor: optionsFor, motionOf: motionOf, mainMotionOf: mainMotionOf,
+  foundOn: foundOn, promptFor: promptFor, keyframesFor: keyframesFor,
+  libFor: libFor, hasStroke: hasStroke, hasPart: hasPart
+};
 
 })();
 
 </script>
 <script>
-/* claude.js
-   The only file that calls a model. Everything else is deterministic.
+/* claude.js — the only file in this plugin that calls a model.
+   Everything else is rules. If this file were deleted the plugin still
+   works; every call below falls back to the deterministic path.
 
-   What is sent:  journey name, stage names and descriptions, frame names.
-   What is not:   frame contents, text, images, layer data, customer data.
+   What is sent:  stage names and descriptions, layer names, sizes, and for
+                  icons the exported SVG outline.
+   What is not:   text content, images, customer data, anything from
+                  outside the selected frame.
 
-   If the call fails for any reason, the caller falls back to ENGINE.mapByName
-   and the plugin keeps working. */
+   The model may only return values from a closed list. Anything else is
+   discarded and the rules run instead. */
 
 (function () {
+"use strict";
 
-  var MODEL = "claude-haiku-4-5-20251001";  // cheapest tier. This is classification.
-  var URL = "https://api.anthropic.com/v1/messages";
+var MODEL = "claude-haiku-4-5-20251001";   // classification against a fixed list
+var URL = "https://api.anthropic.com/v1/messages";
 
-  function buildPrompt(frames, journey, remarks) {
-    return [
-      "Map screens to stages of a journey in a mobile insurance app.",
-      "",
-      "Journey: " + journey.name,
-      remarks ? "What the user is doing: " + remarks : "",
-      "",
-      "Stages, in order:",
-      journey.stages.map(function (s) { return "- " + s.id + ": " + s.plain; }).join("\n"),
-      "",
-      "Screens, in the order the designer selected them:",
-      frames.map(function (f, i) { return i + ". " + f.name; }).join("\n"),
-      "",
-      "Rules:",
-      "- stage must be exactly one of the stage names above. Do not invent stages.",
-      "- Several screens can share a stage.",
-      "- If more than one screen has the same name, use its position to decide.",
-      "- Set sure to false when the name is generic and you inferred from order alone.",
-      "",
-      'Return only a JSON array, no markdown and no preamble:',
-      '[{"i":0,"stage":"Welcome","sure":true,"why":"short reason"}]'
-    ].filter(Boolean).join("\n");
-  }
+function call(key, body) {
+  return fetch(URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true"
+    },
+    body: JSON.stringify(Object.assign({ model: MODEL, max_tokens: 700 }, body))
+  })
+  .then(function (r) { if (!r.ok) throw new Error("status " + r.status); return r.json(); })
+  .then(function (d) {
+    var text = d.content.filter(function (b) { return b.type === "text"; })
+                        .map(function (b) { return b.text; }).join("");
+    return JSON.parse(text.replace(/```json|```/g, "").trim());
+  });
+}
 
-  function mapStages(frames, journey, remarks, key) {
-    return fetch(URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": key,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 1024,
-        messages: [{ role: "user", content: buildPrompt(frames, journey, remarks) }]
-      })
-    })
+/* ------------------------------------------------------------ stage read
+   Used only when the rules are unsure, or when the frame name contradicts
+   what is on the frame. Returns one of the five stages, or nothing. */
+function readStage(frame, stages, key) {
+  var facts = frame.els.map(function (e) {
+    var f = [];
+    if (e.f.tap) f.push("tappable");
+    if (e.f.loading) f.push("looping");
+    if (e.f.completes) f.push("completion mark");
+    if (e.sib > 1) f.push(e.sib + " siblings");
+    return "- " + e.n + " (" + e.t + ", " + e.w + "x" + e.h + (f.length ? ", " + f.join(", ") : "") + ")";
+  }).join("\n");
+
+  var prompt = [
+    "Decide which stage of a user journey a screen in a mobile insurance app belongs to.",
+    "",
+    "Stages:",
+    Object.keys(stages).map(function (k) { return "- " + k + ": " + stages[k].plain; }).join("\n"),
+    "",
+    "Frame name: " + frame.name,
+    "Layers on it:",
+    facts,
+    "",
+    "The frame name can be misleading. Weigh what is actually on the frame more heavily.",
+    "stage must be exactly one of the names above. Do not invent one.",
+    "",
+    'Return only JSON: {"stage":"Confirm","why":"one short sentence, sentence case, ending in a full stop."}'
+  ].join("\n");
+
+  return call(key, { messages: [{ role: "user", content: prompt }] })
     .then(function (r) {
-      if (!r.ok) throw new Error("status " + r.status);
-      return r.json();
+      if (!r || !stages[r.stage]) return null;         // discard anything invented
+      return { stage: r.stage, why: String(r.why || "").slice(0, 200) };
     })
-    .then(function (d) {
-      var text = d.content
-        .filter(function (b) { return b.type === "text"; })
-        .map(function (b) { return b.text; })
-        .join("");
-      var parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+    .catch(function () { return null; });
+}
 
-      // Never trust a stage name the journey does not define.
-      var valid = {};
-      journey.stages.forEach(function (s) { valid[s.id] = true; });
-      return parsed
-        .filter(function (r) { return valid[r.stage]; })
-        .map(function (r) {
-          return { i: r.i, stage: r.stage, sure: !!r.sure,
-                   why: r.why || "matched by Claude" };
-        });
-    });
-  }
+/* ------------------------------------------------------------- icon verb
+   An icon's motion depends on what it depicts, which cannot be read from
+   its size. The model sees the outline and picks one verb from the list.
+   It never returns a duration, an easing or a token. */
+function readIcon(el, allowedVerbs, verbs, key) {
+  if (!el.svg) return Promise.resolve(null);
 
-  function testKey(key) {
-    return fetch(URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": key,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
-      },
-      body: JSON.stringify({ model: MODEL, max_tokens: 8,
-        messages: [{ role: "user", content: "ping" }] })
-    })
+  var list = allowedVerbs.map(function (v) {
+    return "- " + v + ": " + verbs[v].plain;
+  }).join("\n");
+
+  var prompt = [
+    "Here is the outline of an icon from a mobile insurance app, as SVG.",
+    "Layer name: " + el.n,
+    "",
+    el.svg.slice(0, 4000),
+    "",
+    "Choose the one motion below that best suits what this icon depicts.",
+    list,
+    "",
+    "Rules:",
+    "- verb must be exactly one of the ids above.",
+    "- subject must name a part that exists in the SVG, or be empty.",
+    "- One unbroken movement, one property. Never combine two.",
+    "- Do not give a duration, an easing, or a number of milliseconds.",
+    "",
+    'Return only JSON: {"verb":"rotate","subject":"the shackle","what":"one short sentence."}'
+  ].join("\n");
+
+  return call(key, { messages: [{ role: "user", content: prompt }] })
     .then(function (r) {
-      if (r.status === 401) return { ok: false, msg: "Key was rejected. Check it was copied in full." };
-      if (r.status === 429) return { ok: false, msg: "Rate limited. The key works, try again shortly." };
-      if (!r.ok) return { ok: false, msg: "Could not reach the API. Status " + r.status + "." };
-      return { ok: true, msg: "Connected." };
+      if (!r || allowedVerbs.indexOf(r.verb) === -1) return null;   // not in the list
+      var subject = String(r.subject || "");
+      if (subject && el.svg.toLowerCase().indexOf(subject.replace(/^the\s+/i, "").toLowerCase()) === -1) {
+        subject = "";                                              // named a part that is not there
+      }
+      return { verb: r.verb, subject: subject, what: String(r.what || "").slice(0, 200) };
     })
-    .catch(function () {
-      return { ok: false, msg: "No response. Check networkAccess in manifest.json." };
-    });
-  }
+    .catch(function () { return null; });
+}
 
-  window.CLAUDE = { mapStages: mapStages, testKey: testKey, model: MODEL };
+/* --------------------------------------------------------------- key test */
+function testKey(key) {
+  return fetch(URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json", "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true"
+    },
+    body: JSON.stringify({ model: MODEL, max_tokens: 8, messages: [{ role: "user", content: "ping" }] })
+  })
+  .then(function (r) {
+    if (r.status === 401) return { ok: false, msg: "Key was rejected. Check it was copied in full." };
+    if (r.status === 429) return { ok: false, msg: "Rate limited. The key works, try again shortly." };
+    if (!r.ok) return { ok: false, msg: "Could not reach the API. Status " + r.status + "." };
+    return { ok: true, msg: "Connected." };
+  })
+  .catch(function () { return { ok: false, msg: "No response. Check networkAccess in manifest.json." }; });
+}
+
+window.CLAUDE = { readStage: readStage, readIcon: readIcon, testKey: testKey, model: MODEL };
 
 })();
 
 </script>
 <script>
 /* ui.js — the panel. Views, state, and messaging with code.js.
-   Reads its data from window.PATTERNS, window.TOKENS, window.JOURNEYS,
-   window.ANIMATED_ICONS. It never hardcodes a duration, a stage or a pattern. */
+   Reads everything from window.ENGINE and src/data. It never hardcodes a
+   duration, a stage or a motion. */
 
 (function () {
 "use strict";
 
-var S = {
-  view: "setup", prevView: null,
-  apiKey: "", keyDraft: "", keyStatus: null, testing: false,
-  frames: [], excluded: {},
-  journey: Object.keys(window.JOURNEYS)[0],
-  goals: [], remarks: "",
-  map: null, mapping: false, mapMode: "", pending: null,
-  stage: null, frameIdx: null, open: {},
-  showHelp: false, corrections: 0
-};
+var E = window.ENGINE;
+var PAT = window.PAT, VERBS = window.VERBS, STAGES = window.STAGES;
+var DUR = window.DUR, EAS = window.EAS, ORDER = E.ORDER;
 
-function $(id) { return document.getElementById(id); }
-function esc(s) {
-  return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
-    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
-  });
-}
-function J() { return window.JOURNEYS[S.journey]; }
-function stageById(id) {
-  var m = J().stages.filter(function (s) { return s.id === id; });
-  return m.length ? m[0] : J().stages[0];
-}
-function activeFrames() {
-  return S.frames.filter(function (f, i) { return !S.excluded[i]; });
-}
-function post(msg) { parent.postMessage({ pluginMessage: msg }, "*"); }
+var ICON_RULE = "One unbroken movement, one property. Icon motion is judged on Natural first: "
+  + "it should read as the thing behaving, not as an effect applied to it.";
 
-/* ------------------------------------------------ messages from code.js */
-
-window.onmessage = function (e) {
-  var m = e.data.pluginMessage;
-  if (!m) return;
-  if (m.type === "selection") {
-    if (S.view === "setup" || !S.map) {
-      S.frames = m.frames; S.map = null; S.excluded = {}; render();
-    } else {
-      S.pending = m.frames;   // stash it; do not tear down a flow in progress
-      render();
-    }
-  }
-  if (m.type === "key") { S.apiKey = m.key || ""; render(); }
-  if (m.type === "annotated") {
-    var cp = $("cp");
-    if (cp) {
-      cp.textContent = m.ok ? "Placed" : "Could not place";
-      setTimeout(function () { if ($("cp")) $("cp").textContent = "Place on canvas"; }, 1600);
-    }
-  }
-};
-
-/* ------------------------------------------------------------- mapping */
-
-function runMapping() {
-  var frames = activeFrames();
-  S.mapping = true; render();
-
-  function finish(res, mode) {
-    S.map = res; S.mapping = false; S.mapMode = mode; render();
-  }
-  function fallback() {
-    finish(window.ENGINE.mapByName(frames, J()), "name");
-  }
-
-  if (!S.apiKey) return fallback();
-
-  window.CLAUDE.mapStages(frames, J(), S.remarks, S.apiKey)
-    .then(function (res) {
-      if (!res || !res.length) return fallback();
-      finish(res, "claude");
-    })
-    .catch(fallback);
-}
-
-/* ------------------------------------------------------------ the curve */
-
-function smoothPath(pts) {
-  var n = pts.length, i;
-  if (n < 2) return "";
-  var h = [], d = [];
-  for (i = 0; i < n - 1; i++) { h[i] = pts[i + 1].x - pts[i].x; d[i] = (pts[i + 1].y - pts[i].y) / h[i]; }
-  var m = [d[0]];
-  for (i = 1; i < n - 1; i++) {
-    if (d[i - 1] * d[i] <= 0) m[i] = 0;
-    else {
-      var w1 = 2 * h[i] + h[i - 1], w2 = h[i] + 2 * h[i - 1];
-      m[i] = (w1 + w2) / (w1 / d[i - 1] + w2 / d[i]);
-    }
-  }
-  m[n - 1] = d[n - 2];
-  var path = "M" + pts[0].x.toFixed(1) + " " + pts[0].y.toFixed(1);
-  for (i = 0; i < n - 1; i++) {
-    path += " C" + (pts[i].x + h[i] / 3).toFixed(1) + " " + (pts[i].y + m[i] * h[i] / 3).toFixed(1)
-          + "," + (pts[i + 1].x - h[i] / 3).toFixed(1) + " " + (pts[i + 1].y - m[i + 1] * h[i] / 3).toFixed(1)
-          + "," + pts[i + 1].x.toFixed(1) + " " + pts[i + 1].y.toFixed(1);
-  }
-  return path;
-}
-
-function curveSVG(highlight) {
-  var st = J().stages, W = 292, H = 108, padX = 30, top = 16, bot = 78;
-  var pts = st.map(function (s, i) {
-    return { s: s, x: padX + i * ((W - padX - 12) / Math.max(1, st.length - 1)), y: bot - s.h * (bot - top) };
-  });
-  var hi = pts.reduce(function (a, b) { return b.s.h > a.s.h ? b : a; });
-  var lo = pts.reduce(function (a, b) { return b.s.h < a.s.h ? b : a; });
-  return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto" role="img" '
-    + 'aria-label="Motion volume across ' + esc(J().name) + ', peaking at ' + esc(hi.s.id) + '">'
-    + '<defs><marker id="ar" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="5" markerHeight="5" orient="auto">'
-    + '<path d="M1.5 1.5L6.5 4L1.5 6.5" fill="none" stroke="var(--line-2)" stroke-width="1.2" '
-    + 'stroke-linecap="round" stroke-linejoin="round"/></marker></defs>'
-    + '<line x1="16" y1="' + bot + '" x2="16" y2="' + (top - 4) + '" stroke="var(--line-2)" marker-end="url(#ar)"/>'
-    + '<text x="10" y="' + ((top + bot) / 2) + '" font-size="8" fill="var(--ink-3)" text-anchor="middle" '
-    + 'transform="rotate(-90 10 ' + ((top + bot) / 2) + ')">Motion Volume</text>'
-    + '<path d="' + smoothPath(pts) + '" fill="none" stroke="var(--line-2)" stroke-width="1.5"/>'
-    + '<line x1="' + hi.x + '" y1="' + hi.y + '" x2="' + hi.x + '" y2="' + bot + '" stroke="var(--aia-line)" stroke-dasharray="2 2"/>'
-    + '<line x1="' + lo.x + '" y1="' + lo.y + '" x2="' + lo.x + '" y2="' + bot + '" stroke="var(--line-2)" stroke-dasharray="2 2"/>'
-    + '<text x="' + hi.x + '" y="' + (hi.y - 6) + '" font-size="8" fill="var(--aia)" text-anchor="middle">Loudest</text>'
-    + '<text x="' + lo.x + '" y="' + (lo.y - 6) + '" font-size="8" fill="var(--ink-3)" text-anchor="middle">Quietest</text>'
-    + pts.map(function (p) {
-        var on = highlight === p.s.id;
-        return '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (on ? 5 : 3) + '" fill="'
-          + (on ? "var(--aia)" : p.s.lead ? "var(--aia)" : "var(--ink-3)") + '"/>'
-          + '<text x="' + p.x + '" y="' + (bot + 12) + '" font-size="8" text-anchor="middle" fill="'
-          + (on ? "var(--aia)" : "var(--ink-3)") + '">' + esc(p.s.id) + '</text>';
-      }).join("")
-    + '</svg>';
-}
-
-/* ------------------------------------------------------------- prompts */
-
-function promptOne(a, frameName) {
-  if (a.lib) return "Use " + a.lib.icon + " from the Qi icon library for " + a.el.n
-    + " on " + frameName + ". " + a.lib.note + " Do not build this animation by hand.";
-  if (a.pid === "none") return "Leave " + a.el.n + " on " + frameName + " unanimated. " + a.note;
-  var p = a.p, T = window.TOKENS;
-  var d = p.tokens.filter(function (t) { return t.indexOf("duration-") === 0; })[0];
-  var e = p.tokens.filter(function (t) { return t.indexOf("easing-") === 0; })[0];
-  var ms = p.ms || (d ? T[d].ms : null);
-  var L = ["Animate " + a.el.n + " on " + frameName + ".", p.dials.Amplitude + ".",
-    (ms ? ms + "ms" : "Continuous loop, 2200ms per cycle") + ", " + (e ? T[e].cubic : "linear") + "."];
-  if (p.tokens.indexOf("stagger-tight") > -1) L.push((p.stagger || 60) + "ms between siblings.");
-  L.push("Trigger on this layer only. Do not animate the frame.");
-  if (p.never) L.push(p.never);
-  return L.join(" ");
-}
-
-/* --------------------------------------------------------------- views */
-
-var V = {};
-
-function pendingBanner() {
-  if (!S.pending) return '';
-  return '<div class="flag bad" style="margin-bottom:10px"><b>Selection changed</b>'
-    + 'You are still working on the previous journey. '
-    + '<button class="link" id="reload">Start again with the new selection</button></div>';
-}
-
-function render() {
-  var b = $("body"), f = $("foot");
-  b.scrollTop = 0;
-  V[S.view](b, f);
-  if (S.pending && S.view !== "setup" && S.view !== "settings") {
-    b.insertAdjacentHTML("afterbegin", pendingBanner());
-    var r = $("reload");
-    if (r) r.onclick = function () {
-      S.frames = S.pending; S.pending = null; S.map = null; S.excluded = {};
-      S.stage = null; S.frameIdx = null; S.view = "setup"; render();
-    };
-  }
-  var g = $("gear");
-  g.style.display = (S.view === "settings") ? "none" : "";
-  g.onclick = function () {
-    if (S.view !== "settings") { S.prevView = S.view; S.view = "settings"; render(); }
-  };
-}
-
-/* ---- setup ---- */
-V.setup = function (b, f) {
-  $("ttl").textContent = "Delight Motion"; $("stp").textContent = "Setup";
-  var live = activeFrames().length;
-
-  if (!S.frames.length) {
-    b.innerHTML = '<h3>Select some frames</h3>'
-      + '<p class="lede">Select the frames in a journey, in the order the user moves through them. '
-      + 'Selecting a section picks up every frame inside it.</p>';
-    f.innerHTML = ''; return;
-  }
-
-  b.innerHTML =
-    '<h3>Set up the journey</h3>'
-    + '<p class="lede">' + live + ' of ' + S.frames.length + ' frames included.</p>'
-    + '<p class="q">Which journey is this?</p>'
-    + '<select id="jr" style="margin-bottom:12px">'
-    + Object.keys(window.JOURNEYS).map(function (k) {
-        return '<option value="' + k + '"' + (k === S.journey ? ' selected' : '') + '>'
-          + esc(window.JOURNEYS[k].name) + '</option>'; }).join("")
-    + '</select>'
-    + '<p class="q">What is the user doing?</p>'
-    + '<textarea id="rm" rows="2" placeholder="Booking a doctor with the AIA assistant">' + esc(S.remarks) + '</textarea>'
-    + '<p class="note" style="margin-top:4px">One line. Used to match frames to stages.</p>'
-    + '<p class="q" style="margin-top:12px">How should someone feel at the end?</p>'
-    + '<p class="note" style="margin-bottom:6px">Pick as many as apply.</p>'
-    + window.GOALS.map(function (g) {
-        return '<button class="opt" data-g="' + g.v + '" aria-pressed="' + (S.goals.indexOf(g.v) > -1) + '">'
-          + esc(g.l) + '<small>' + esc(g.sub) + '</small></button>'; }).join("")
-    + '<div class="sec">Frames in this journey</div>'
-    + '<p class="note" style="margin-bottom:6px">Uncheck anything that is not a step: '
-    + 'filter panels, component variants, alternate branches.</p>'
-    + S.frames.map(function (fr, i) {
-        return '<div class="frow"><label style="flex:1;display:flex;gap:7px;align-items:center;cursor:pointer">'
-          + '<input type="checkbox" data-x="' + i + '"' + (S.excluded[i] ? '' : ' checked') + '>'
-          + '<span class="nm"' + (S.excluded[i] ? ' style="color:var(--ink-3);text-decoration:line-through"' : '')
-          + ' title="' + esc(fr.name) + '">' + esc(fr.name) + '</span></label>'
-          + '<span class="note">' + fr.els.length + '</span></div>'; }).join("");
-
-  Array.prototype.forEach.call(b.querySelectorAll(".opt"), function (o) {
-    o.onclick = function () {
-      var i = S.goals.indexOf(o.dataset.g);
-      if (i > -1) S.goals.splice(i, 1); else S.goals.push(o.dataset.g);
-      render();
-    };
-  });
-  Array.prototype.forEach.call(b.querySelectorAll("[data-x]"), function (c) {
-    c.onchange = function () { S.excluded[c.dataset.x] = !c.checked; render(); };
-  });
-  $("jr").onchange = function (e) { S.journey = e.target.value; S.map = null; S.stage = null; };
-  $("rm").oninput = function (e) { S.remarks = e.target.value; };
-
-  var ready = S.goals.length && live >= 2;
-  f.innerHTML = '<button class="primary" style="flex:1" id="nx"' + (ready ? '' : ' disabled') + '>'
-    + (live < 2 ? 'Include at least 2 frames' : 'Map the journey') + '</button>';
-  if (ready) $("nx").onclick = function () { S.view = "curve"; runMapping(); };
-};
-
-/* ---- curve ---- */
-V.curve = function (b, f) {
-  $("ttl").textContent = J().name; $("stp").textContent = "Step 1 of 3";
-  if (S.mapping) {
-    b.innerHTML = '<h3>Mapping your journey</h3><p class="lede"><span class="spin"></span> '
-      + (S.apiKey ? 'Claude is reading your frame names and placing each one on a stage.'
-                  : 'Matching frame names to stages.') + '</p>';
-    f.innerHTML = ''; return;
-  }
-  var frames = activeFrames();
-  var st = J().stages;
-  var unsure = S.map.filter(function (m) { return !m.sure; }).length;
-
-  b.innerHTML =
-    '<h3>Review the curve</h3>'
-    + '<p class="lede">Where each frame sits, and how loud motion should be there. '
-    + (S.mapMode === "claude" ? 'Matched by Claude.'
-        : 'Matched by name. Add a key in settings for better guesses on unclear names.') + '</p>'
-    + curveSVG(null)
-    + '<button class="link" id="hp" style="margin:4px 0 8px">'
-    + (S.showHelp ? 'Hide' : 'What is Motion Volume?') + '</button>'
-    + (S.showHelp ? helpBlock() : '')
-    + (unsure ? '<div class="flag bad"><b>' + unsure + ' frame' + (unsure > 1 ? 's' : '')
-        + ' not certain</b>Open the dropdown to confirm or change it.</div>' : '')
-    + S.map.map(function (m) {
-        var fr = frames[m.i];
-        if (!fr) return '';
-        return '<div class="frow"><span class="nm" title="' + esc(fr.name) + '">' + esc(fr.name) + '</span>'
-          + (m.sure ? '' : '<span class="guess" title="' + esc(m.why) + '">Guessed</span>')
-          + '<select data-i="' + m.i + '">'
-          + st.map(function (s) { return '<option' + (s.id === m.stage ? ' selected' : '') + '>'
-              + esc(s.id) + '</option>'; }).join("")
-          + '</select></div>'; }).join("")
-    + namingHint()
-    + (S.corrections ? '<p class="note" style="margin-top:8px">' + S.corrections
-        + ' correction' + (S.corrections > 1 ? 's' : '') + ' logged.</p>' : '');
-
-  $("hp").onclick = function () { S.showHelp = !S.showHelp; render(); };
-  Array.prototype.forEach.call(b.querySelectorAll("select"), function (sel) {
-    function confirmRow() {
-      var i = parseInt(sel.dataset.i, 10);
-      var rec = S.map.filter(function (m) { return m.i === i; })[0];
-      if (rec.stage !== sel.value) S.corrections++;
-      rec.stage = sel.value; rec.sure = true; render();
-    }
-    sel.onchange = confirmRow;
-    sel.onblur = confirmRow;
-  });
-
-  f.innerHTML = '<button id="bk">Back</button><button class="primary" style="flex:1" id="nx">Confirm map</button>';
-  $("bk").onclick = function () { S.view = "setup"; render(); };
-  $("nx").onclick = function () { S.view = "stage"; render(); };
-};
-
-function helpBlock() {
-  var rows = [
-    ["Amplitude",    "How much changes: position, size, opacity, rotation", 92],
-    ["Duration",     "How long it takes",                                   64],
-    ["Character",    "How it speeds up and slows",                          76],
-    ["Choreography", "How many things move, and in what order",             50]
-  ];
-  return '<div class="help">'
-    + '<b>Motion Volume</b> is how much a moment moves overall. Four things set it:'
-    + '<div class="dials-x">'
-    + rows.map(function (r) {
-        return '<div class="dx-row">'
-          + '<div class="dx-label">' + r[0] + '</div>'
-          + '<div class="dx-track"><div class="dx-fill" style="width:' + r[2] + '%"></div></div>'
-          + '<div class="dx-sub">' + r[1] + '</div>'
-          + '</div>'; }).join("")
-    + '</div>'
-    + '<p style="margin:0 0 10px">A moment with all four turned up asks for attention. '
-    + 'With all four turned down, it does its job and gets out of the way.</p>'
-    + '<b>Reading the curve</b>'
-    + '<p style="margin:4px 0 10px">Insurance journeys open with a greeting, run quiet while the '
-    + 'user is working, then peak once at the point they commit. That shape holds across journeys.</p>'
-    + '<p style="margin:0">The heights are relative to this journey only. The peak here is not as '
-    + 'loud as the peak in a rewards flow.</p></div>';
-}
-
-function namingHint() {
-  return '<div class="help" style="margin-top:12px"><b>Frame names decide the mapping</b>'
-    + '<div style="display:flex;gap:8px;margin-top:7px">'
-    + '<div style="flex:1"><div style="font-size:9px;color:var(--ok);margin-bottom:3px">Works</div>'
-    + '<div class="chip-code ok">06 Confirmation</div></div>'
-    + '<div style="flex:1"><div style="font-size:9px;color:var(--warn);margin-bottom:3px">Gets guessed</div>'
-    + '<div class="chip-code warn">Book doctor</div></div></div>'
-    + '<p class="note" style="margin-top:6px">Repeated names are resolved by position, which is '
-    + 'often wrong. Number them.</p></div>';
-}
-
-/* ---- stage ---- */
-V.stage = function (b, f) {
-  $("ttl").textContent = J().name; $("stp").textContent = "Step 2 of 3";
-  var st = J().stages, frames = activeFrames();
-  var lead = st.filter(function (s) { return s.lead; })[0];
-
-  b.innerHTML =
-    '<h3>Which stage are you working on?</h3>'
-    + '<p class="lede">Motion is generated for every element in that stage.</p>'
-    + curveSVG(S.stage)
-    + '<div class="rec" style="margin-top:8px">Start with <b>' + esc(lead.id) + '</b>. '
-    + 'It is the loudest point in this journey and the one worth getting right first.</div>'
-    + st.map(function (s) {
-        var mine = S.map.filter(function (m) { return m.stage === s.id; });
-        var count = mine.reduce(function (n, m) { return n + (frames[m.i] ? frames[m.i].els.length : 0); }, 0);
-        var hi = Math.max.apply(null, st.map(function (x) { return x.h; }));
-        var lo = Math.min.apply(null, st.map(function (x) { return x.h; }));
-        var lvl = s.h === hi ? 'Loudest' : s.h === lo ? 'Quietest' : 'Building';
-        return '<button class="opt" data-s="' + esc(s.id) + '" aria-pressed="' + (S.stage === s.id) + '"'
-          + (mine.length ? '' : ' disabled') + '>'
-          + '<span style="display:flex;justify-content:space-between;gap:6px">'
-          + '<span>' + esc(s.id) + '</span>'
-          + '<span class="lvl' + (s.lead ? ' peak' : '') + '">' + lvl + '</span></span>'
-          + '<small>' + (mine.length ? mine.length + ' frame' + (mine.length > 1 ? 's' : '') + ', ' + count + ' elements'
-              : 'no frames here') + '</small></button>'; }).join("");
-
-  Array.prototype.forEach.call(b.querySelectorAll(".opt"), function (o) {
-    if (o.disabled) return;
-    o.onclick = function () { S.stage = o.dataset.s; S.frameIdx = null; render(); };
-  });
-  f.innerHTML = '<button id="bk">Back</button><button class="primary" style="flex:1" id="nx"'
-    + (S.stage ? '' : ' disabled') + '>Generate motion</button>';
-  $("bk").onclick = function () { S.view = "curve"; render(); };
-  if (S.stage) $("nx").onclick = function () {
-    var mine = S.map.filter(function (m) { return m.stage === S.stage; });
-    S.frameIdx = mine[0].i; S.open = {}; S.view = "out"; render();
-  };
-};
-
-/* ---- output ---- */
 var TESTS = [
-  { k: "nat", l: "Natural",    p: "feels real",  n: "Nothing here needs to imitate a physical object." },
-  { k: "fun", l: "Functional", p: "does a job",  n: "Not carrying information on its own." },
-  { k: "exp", l: "Expressive", p: "right tone",  n: "Neutral by design. Not a focal moment." }
+  { k:"nat", l:"Natural",    p:"feels real",  n:"Nothing here needs to imitate a physical object." },
+  { k:"fun", l:"Functional", p:"does a job",  n:"Not carrying information on its own." },
+  { k:"exp", l:"Expressive", p:"right tone",  n:"Neutral by design. Not a focal moment." }
 ];
 
-V.out = function (b, f) {
-  var st = stageById(S.stage), frames = activeFrames();
-  var mine = S.map.filter(function (m) { return m.stage === S.stage; });
-  var fr = frames[S.frameIdx];
-  $("ttl").textContent = S.stage; $("stp").textContent = "Step 3 of 3";
-  if (!fr) {
-    b.innerHTML = '<h3>That frame is no longer in the selection</h3>'
-      + '<p class="lede">Go back and pick a stage again.</p>';
-    f.innerHTML = '<button style="flex:1" id="bk">Back</button>';
-    $("bk").onclick = function () { S.view = "stage"; render(); };
-    return;
+var S = {
+  view:"empty", prevView:null,
+  frame:null, extra:0, reading:false,
+  dx:null, changing:false, aiNote:"",
+  gi:null, picked:{}, applied:{},
+  apiKey:"", keyDraft:"", keyStatus:null, testing:false
+};
+
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function post(m){ parent.postMessage({ pluginMessage:m }, "*"); }
+function tokVal(t){ return DUR[t] ? DUR[t].ms+"ms" : EAS[t] ? EAS[t].c : ""; }
+
+/* --------------------------------------------------- messages from code.js */
+window.onmessage = function (e) {
+  var m = e.data.pluginMessage; if (!m) return;
+
+  if (m.type === "frame") {
+    S.frame = m.frame; S.extra = m.extra || 0;
+    S.picked = {}; S.applied = {}; S.aiNote = "";
+    if (!m.frame) { S.view = "empty"; S.dx = null; }
+    else { S.view = "read"; readFrame(); }
+    render();
   }
-  var anns = window.ENGINE.annotate(fr, st);
-  var moving = anns.filter(function (a) { return a.pid !== "none"; }).length;
-  var T = window.TOKENS;
+  if (m.type === "key") { S.apiKey = m.key || ""; render(); }
+  if (m.type === "applied") {
+    if (m.ok && m.key) S.applied[m.key] = m.viaMotion ? "motion" : "note";
+    render();
+  }
+};
 
-  b.innerHTML =
-    (mine.length > 1
-      ? '<div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">'
-        + mine.map(function (m) {
-            return '<button data-f="' + m.i + '" class="' + (m.i === S.frameIdx ? 'primary' : '') + '" '
-              + 'style="font-size:10px;padding:5px 8px">' + esc(frames[m.i].name) + '</button>'; }).join("")
-        + '</div>' : '')
-    + '<h3>' + esc(fr.name) + '</h3>'
-    + '<p class="lede">' + moving + ' of ' + anns.length + ' elements move. ' + esc(st.plain)
-    + ', so this stage stays ' + (st.lead ? 'at the peak' : 'quiet') + '.</p>'
-    + '<p class="note" style="margin-bottom:8px">Open an element to see its spec and copy its prompt.</p>'
-    + anns.map(function (a, i) {
-        var open = !!S.open[i], p = a.p;
-        var stag = p.tokens.indexOf("stagger-tight") > -1;
-        return '<div class="ann' + (a.pid === "none" ? ' mute' : '') + '">'
-          + '<div class="ann-h" data-o="' + i + '"><span class="en">' + esc(a.el.n) + '</span>'
-          + '<span class="pt">' + (a.lib ? 'Use icon' : esc(p.name)) + '</span></div>'
-          + (open ? '<div class="ann-b">'
-              + (a.lib ? '<div class="flag good" style="margin-bottom:8px"><b>Already in the icon library</b>'
-                  + '<code>' + esc(a.lib.icon) + '</code>. ' + esc(a.lib.note) + '</div>' : '')
-              + '<p style="color:var(--ink-2);margin-bottom:8px">' + esc(p.plain) + '</p>'
-              + '<div class="dial">'
-              + Object.keys(p.dials).map(function (k) {
-                  return '<span>' + esc(k) + '</span><span>' + esc(p.dials[k]) + '</span>'; }).join("")
-              + '</div>'
-              + (p.tokens.length ? p.tokens.map(function (t) {
-                  var tk = T[t];
-                  var shown = (tk.ms && t.indexOf("duration-") === 0 && p.ms) ? p.ms + "ms"
-                            : (tk.ms && t === "stagger-tight" && p.stagger) ? p.stagger + "ms"
-                            : (tk.ms ? tk.ms + "ms" : tk.cubic);
-                  return '<div class="kv"><code>' + esc(t) + '</code><span>' + shown
-                    + (tk.qi ? '' : '<span class="new">new</span>') + '</span></div>'; }).join("") : '')
-              + '<div class="pvbox" id="pv' + i + '">'
-              + Array.apply(null, { length: stag ? 4 : 1 }).map(function () {
-                  return '<div class="' + (stag ? "bar" : "sq") + '"></div>'; }).join("")
-              + '</div>'
-              + '<button class="link" data-p="' + i + '" style="margin-bottom:8px">Play again</button>'
-              + '<p class="note" style="margin:0 0 10px">Why this one: ' + esc(a.note) + '</p>'
-              + '<div class="sec" style="margin:0 0 6px">Motion Principles</div>'
-              + TESTS.map(function (t) {
-                  var v = p.why[t.k];
-                  return '<p style="font-size:10px;line-height:1.55;margin-bottom:5px;color:'
-                    + (v ? 'var(--ink-2)' : 'var(--ink-3)') + '"><b style="color:var(--ink)">' + t.l + '</b> '
-                    + '<span style="color:var(--ink-3)">' + t.p + '</span><br>' + esc(v || t.n) + '</p>'; }).join("")
-              + '<button data-c="' + i + '" style="width:100%;margin-top:8px">Copy prompt for this element</button>'
-              + '</div>' : '')
-          + '</div>'; }).join("");
+/* ------------------------------------------------------------- diagnosis
+   Rules first. The model is asked only when the rules are unsure, and it
+   can only answer with one of the five stages. */
+function readFrame(){
+  S.reading = true; render();
+  var dx = E.diagnose(S.frame);
 
-  function play(i) {
-    var a = anns[i], p = a.p, box = $("pv" + i);
-    if (!box) return;
-    var dTok = p.tokens.filter(function (t) { return t.indexOf("duration-") === 0; })[0];
-    var eTok = p.tokens.filter(function (t) { return t.indexOf("easing-") === 0; })[0];
-    var d = p.ms || (dTok ? T[dTok].ms : 1400);
-    var c = eTok ? T[eTok].cubic : "linear";
-    var stag = p.tokens.indexOf("stagger-tight") > -1;
-    var gap = p.stagger || 60;
-    var from = { t: "none", o: "1" };
-    if (a.pid === "cascade") from = { t: "translateY(12px)", o: "0" };
-    else if (a.pid === "settle") from = { t: "scale(.92)", o: "1", mid: "scale(1.04)" };
-    else if (a.pid === "surface-rise") from = { t: "translateY(46px)", o: "1" };
-    else if (a.pid === "single-rise") from = { t: "translateY(16px)", o: "0" };
-    else if (a.pid === "tap-response") from = { t: "scale(.97)", o: "1" };
-    else if (a.pid === "progressive-reveal") from = { t: "none", o: "0" };
-    else if (a.pid === "ambient-loop") from = { t: "none", o: ".25" };
-    else if (a.pid === "stroke-in") from = { t: "scaleX(0)", o: "1" };
-    else if (a.pid === "recede") from = { t: "none", o: "1", to: { t: "translateY(8px)", o: ".4" } };
-    else if (a.pid === "container-transform") from = { t: "translateX(-24px) scale(.85)", o: "1" };
-    else if (a.pid === "none") from = { t: "none", o: "1", still: true };
+  if (dx.sure || !S.apiKey) {
+    S.dx = dx; S.reading = false; S.changing = !dx.sure; render(); return;
+  }
+  window.CLAUDE.readStage(S.frame, STAGES, S.apiKey).then(function (r) {
+    if (r) {
+      S.dx = { stage:r.stage, sure:true, evidence:[r.why] };
+      S.aiNote = "Read by Claude, because the frame name and its layers did not agree.";
+    } else {
+      S.dx = dx; S.changing = true;
+    }
+    S.reading = false; render();
+  });
+}
 
-    Array.prototype.forEach.call(box.children, function (el, k) {
-      el.style.transition = "none";
-      el.style.transformOrigin = a.pid === "stroke-in" ? "left center" : "center";
-      el.style.transform = from.t; el.style.opacity = from.o;
-      void el.offsetWidth;
-      if (from.still) return;
-      setTimeout(function () {
-        el.style.transition = "transform " + d + "ms " + c + ", opacity " + d + "ms " + c;
-        if (from.to) { el.style.transform = from.to.t; el.style.opacity = from.to.o; }
-        else if (from.mid) {
-          el.style.transform = from.mid;
-          setTimeout(function () { el.style.transform = "none"; }, d * 0.55);
-        } else { el.style.transform = "none"; el.style.opacity = "1"; }
-      }, (stag ? k * gap : 0) + 60);
+/* ------------------------------------------------------------- the curve */
+function curve(active){
+  var W=304,H=72,padX=28,top=10,bot=48, hs=E.heights();
+  var pts=ORDER.map(function(id,i){
+    return { id:id, x:padX+i*((W-padX-16)/(ORDER.length-1)), y:bot-hs[i]*(bot-top) };
+  });
+  var n=pts.length,h=[],d=[],i;
+  for(i=0;i<n-1;i++){ h[i]=pts[i+1].x-pts[i].x; d[i]=(pts[i+1].y-pts[i].y)/h[i]; }
+  var m=[d[0]];
+  for(i=1;i<n-1;i++){
+    if(d[i-1]*d[i]<=0) m[i]=0;
+    else { var w1=2*h[i]+h[i-1], w2=h[i]+2*h[i-1]; m[i]=(w1+w2)/(w1/d[i-1]+w2/d[i]); }
+  }
+  m[n-1]=d[n-2];
+  var p="M"+pts[0].x.toFixed(1)+" "+pts[0].y.toFixed(1);
+  for(i=0;i<n-1;i++){
+    p+=" C"+(pts[i].x+h[i]/3).toFixed(1)+" "+(pts[i].y+m[i]*h[i]/3).toFixed(1)
+      +","+(pts[i+1].x-h[i]/3).toFixed(1)+" "+(pts[i+1].y-m[i+1]*h[i]/3).toFixed(1)
+      +","+pts[i+1].x.toFixed(1)+" "+pts[i+1].y.toFixed(1);
+  }
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" '
+    +'aria-label="Where this moment sits across a journey, peaking at Confirm">'
+    +'<path d="'+p+'" fill="none" stroke="var(--line-2)" stroke-width="1.5"/>'
+    +pts.map(function(q){
+      var on=q.id===active;
+      return '<circle cx="'+q.x+'" cy="'+q.y+'" r="'+(on?5:2.5)+'" fill="'
+        +(on?"var(--aia)":"var(--line-2)")+'"/>'
+        +'<text x="'+q.x+'" y="'+(bot+16)+'" font-size="8" text-anchor="middle" fill="'
+        +(on?"var(--aia)":"var(--ink-3)")+'">'+q.id+'</text>'; }).join("")
+    +'</svg>';
+}
+
+/* --------------------------------------------------------------- volume */
+function volBar(p, target, stageLabel){
+  var v=E.volumeOf(p), d=v.total-target, MX=E.VOL_MAX;
+  var rows=[["Amplitude",v.a,MX.a],["Duration",v.d,MX.d],["Character",v.c,MX.c],["Choreography",v.o,MX.o]];
+  var fit = Math.abs(d)<=1 ? "Sits where the curve asks for this stage."
+          : d>1 ? "Louder than "+stageLabel.toLowerCase()+" usually asks for. Valid, but it will stand out."
+          : "Quieter than "+stageLabel.toLowerCase()+" usually asks for. Valid, but it may go unnoticed.";
+  var pct=function(n){ return (n/13*100).toFixed(1); };
+  return '<div class="volwrap">'
+    +'<div class="volhead"><span>Motion Volume</span><span>'+v.total+' of 13</span></div>'
+    +'<div class="voltotal"><span class="voltotalfill" style="width:'+pct(v.total)+'%"></span>'
+    +'<span class="voltarget" style="left:'+pct(target)+'%"></span></div>'
+    +'<p class="volfit'+(Math.abs(d)<=1?' ok':'')+'">'+fit+' The curve asks for about '+target+' here.</p>'
+    +rows.map(function(r){
+      return '<div class="volrow"><span>'+r[0]+'</span>'
+        +'<span class="voltrack"><span class="volfill" style="width:'+(r[1]/r[2]*100)+'%"></span></span>'
+        +'<span class="volnum">'+r[1]+'</span></div>'; }).join("")
+    +'</div>';
+}
+
+/* ---------------------------------------------------------------- views */
+var V = {};
+function render(){
+  var b=$("body"), f=$("foot");
+  b.scrollTop=0;
+  (V[S.view]||V.empty)(b,f);
+  var g=$("gear");
+  g.style.display = (S.view==="settings") ? "none" : "";
+  g.onclick = function(){ if(S.view!=="settings"){ S.prevView=S.view; S.view="settings"; render(); } };
+}
+
+V.empty = function(b,f){
+  $("ttl").textContent="Delight Motion"; $("stp").textContent="";
+  b.innerHTML='<h3>Select A Frame</h3>'
+    +'<p class="lede">Pick the moment you want to work on. The plugin reads what is on it, '
+    +'says what kind of moment it is, and suggests motion that fits.</p>';
+  f.innerHTML='';
+};
+
+V.read = function(b,f){
+  $("ttl").textContent=esc(S.frame.name); $("stp").textContent="Step 1 of 3";
+  if(S.reading){
+    b.innerHTML='<h3>Reading The Frame</h3><p class="lede"><span class="spin"></span> '
+      +'Looking at what is on it to work out what kind of moment this is.</p>';
+    f.innerHTML=''; return;
+  }
+  var st=STAGES[S.dx.stage];
+  b.innerHTML=
+    (S.dx.sure
+      ? '<div class="diag"><div class="k">This Looks Like</div><h2>'+esc(st.label)+'</h2>'
+        +'<p>'+esc(st.plain)+'</p></div>'
+      : '<div class="flag warn"><b>Which Moment Is This?</b>'
+        +'The frame name and its layers do not point clearly at one stage.</div>')
+    + curve(S.dx.stage)
+    + '<p class="note" style="text-align:center;margin:2px 0 10px">Where this sits across a journey. '
+    + 'Higher means motion here can be more noticeable.</p>'
+    + (S.dx.evidence.length
+        ? '<div class="sec">Why</div>'+S.dx.evidence.map(function(e){
+            return '<p class="evi">'+esc(e)+'</p>'; }).join("") : '')
+    + (S.aiNote ? '<p class="note" style="margin-top:8px">'+esc(S.aiNote)+'</p>' : '')
+    + (S.extra ? '<p class="note" style="margin-top:8px">'+S.extra
+        +' other frame'+(S.extra>1?'s are':' is')+' selected. Only the first is being read.</p>' : '')
+    + (S.changing
+        ? '<div class="sec">Set The Moment</div><select id="sel">'
+          + ORDER.map(function(k){ return '<option value="'+k+'"'+(k===S.dx.stage?' selected':'')+'>'
+              +esc(STAGES[k].label)+'</option>'; }).join("")+'</select>'
+        : '<p style="text-align:center;margin-top:12px">'
+          +'<button class="link" id="ch">Not the right moment?</button></p>');
+
+  if($("ch")) $("ch").onclick=function(){ S.changing=true; render(); };
+  if($("sel")) $("sel").onchange=function(e){
+    S.dx={ stage:e.target.value, sure:true, evidence:["You set this by hand."] };
+    S.aiNote=""; S.picked={}; S.applied={}; render(); };
+
+  f.innerHTML='<button class="primary" style="flex:1" id="nx">Confirm</button>';
+  $("nx").onclick=function(){ S.view="rules"; render(); };
+};
+
+V.rules = function(b,f){
+  var st=STAGES[S.dx.stage];
+  var main=E.mainMotionOf(S.frame,S.dx.stage), gs=E.groups(S.frame);
+  var mainLabel = main ? gs.filter(function(g){return g.key===main;})[0].label : null;
+  var found=E.foundOn(S.frame);
+
+  $("ttl").textContent=esc(st.label); $("stp").textContent="Step 2 of 3";
+  b.innerHTML=
+    '<div class="stagebar"><span class="k">Reading this as</span><b>'+esc(st.label)+'</b>'
+    +'<button class="link" id="ch">Not the right moment?</button></div>'
+    +'<h3>What That Means Here</h3>'
+    +(st.quiet
+      ? '<p class="lede">'+esc(st.quiet)+' That does not mean no motion. It means smaller dials, '
+        +'not fewer moving parts.</p>'
+      : '<p class="lede">'+esc(st.plain)+'</p>')
+    +'<div class="sec">At This Stage</div>'
+    +st.can.map(function(r){ return '<div class="rule yes"><span class="ic">&#10003;</span><span><b>'
+      +esc(r[0])+'</b><span class="d">'+esc(r[1])+'</span></span></div>'; }).join("")
+    +(mainLabel
+      ? '<div class="rule yes"><span class="ic">&#10003;</span><span><b>'+esc(mainLabel)
+        +' can be the main motion</b><span class="d">One motion stands out per moment. '
+        +'Everything else on this frame stays supporting.</span></span></div>'
+      : '<div class="rule no"><span class="ic">&#33;</span><span><b>Nothing stands out here</b>'
+        +'<span class="d">No single element should lead at this stage.</span></span></div>')
+    +st.cannot.map(function(r){ return '<div class="rule no"><span class="ic">&#33;</span><span><b>'
+      +esc(r[0])+'</b><span class="d">'+esc(r[1])+'</span></span></div>'; }).join("")
+    +(found.length ? '<div class="sec">On This Frame</div>'
+      +found.map(function(r){ return '<div class="rule found"><span class="ic">&#8226;</span><span><b>'
+        +esc(r.t)+'</b><span class="d">'+esc(r.d)+'</span></span></div>'; }).join("") : '');
+
+  $("ch").onclick=function(){ S.changing=true; S.view="read"; render(); };
+  f.innerHTML='<button id="bk">Back</button><button class="primary" style="flex:1" id="nx">Choose Motion</button>';
+  $("bk").onclick=function(){ S.view="read"; render(); };
+  $("nx").onclick=function(){ S.view="els"; render(); };
+};
+
+/* ---- apply, either as real keyframes or as a note ---- */
+function applyGroup(g, id, isMain){
+  var stage=S.dx.stage;
+  var ids=S.frame.els.filter(function(e){
+    return e.n.toLowerCase().replace(/[\s_-]*\d+$/,"").trim()===g.key.toLowerCase()
+        || e.n===g.label; }).map(function(e){ return e.id; });
+  if(!ids.length) ids=[g.el.id];
+  var p=E.motionOf(id);
+  post({ type:"apply", job:{
+    groupKey:g.key, nodeIds:ids, kf:E.keyframesFor(id),
+    annotation:{ frameId:S.frame.id, stage:stage,
+      main: isMain ? g.label : "",
+      items:[{ element:g.label+(g.count>1?" (all "+g.count+")":""),
+               motion:p.name, detail:p.plain, tokens:p.tokens.join("  ·  ") }] }
+  }});
+}
+
+V.els = function(b,f){
+  var stage=S.dx.stage, gs=E.groups(S.frame), main=E.mainMotionOf(S.frame,stage);
+  $("ttl").textContent=esc(S.frame.name); $("stp").textContent="Step 3 of 3";
+  var done=0;
+
+  b.innerHTML='<h3>Choose Motion</h3>'
+    +'<p class="lede">Each one already has a suggestion. Apply it, or look at the alternatives first.</p>'
+    +gs.map(function(g,i){
+      var o=E.optionsFor(g,stage), chosen=S.picked[g.key], applied=S.applied[g.key];
+      if(applied) done++;
+      var shown = chosen || (o.lib ? null : o.ids[0]);
+      var label = o.lib ? o.lib.name : (shown ? E.motionOf(shown).name : "No option");
+      var alt = o.lib ? 0 : Math.max(0, o.ids.length-1);
+      return '<div class="ecard'+(applied?' done':'')+'">'
+        +'<div class="ehead"><span style="flex:1"><span class="nm">'+esc(g.label)
+        +(g.count>1?' <span class="note">&times;'+g.count+'</span>':'')
+        +(main===g.key?' <span class="pill">Main motion</span>':'')+'</span>'
+        +'<span class="st">'+esc(label)
+        +(o.lib?' &middot; from the library':chosen?' &middot; your pick':' &middot; suggested')
+        +(applied==="note"?' &middot; placed as a note':'')+'</span></span>'
+        +(applied?'<span class="pill k">Applied</span>':'')+'</div>'
+        +'<div class="eact">'
+        +'<button class="mini" data-g="'+i+'">'
+        +(o.lib?'See the icon':(alt?'See '+alt+' other'+(alt>1?'s':''):'See details'))+'</button>'
+        +'<button class="mini go" data-a="'+i+'">'
+        +(applied?'Applied':(o.lib?'Insert':'Apply to canvas'))+'</button>'
+        +'</div></div>'; }).join("")
+    +'<p class="note" style="margin-top:8px">'+done+' of '+gs.length+' applied.</p>';
+
+  Array.prototype.forEach.call(b.querySelectorAll("[data-g]"),function(x){
+    x.onclick=function(){ S.gi=parseInt(x.dataset.g,10); S.view="opts"; render(); };});
+  Array.prototype.forEach.call(b.querySelectorAll("[data-a]"),function(x){
+    x.onclick=function(){
+      var g=gs[parseInt(x.dataset.a,10)], o=E.optionsFor(g,stage);
+      if(o.lib){ post({ type:"insert-icon", job:{ groupKey:g.key, key:o.lib.key, nodeIds:[g.el.id] } }); }
+      else { if(!S.picked[g.key]) S.picked[g.key]=o.ids[0];
+             applyGroup(g, S.picked[g.key], main===g.key); }
+      x.textContent="…";
+    };});
+
+  var left=gs.length-done;
+  f.innerHTML='<button id="bk">Back</button><button class="primary" style="flex:1" id="all"'
+    +(left?'':' disabled')+'>'+(left?'Apply the remaining '+left:'All applied')+'</button>';
+  $("bk").onclick=function(){ S.view="rules"; render(); };
+  if(left) $("all").onclick=function(){
+    gs.forEach(function(g){
+      if(S.applied[g.key]) return;
+      var o=E.optionsFor(g,stage);
+      if(o.lib){ post({ type:"insert-icon", job:{ groupKey:g.key, key:o.lib.key, nodeIds:[g.el.id] } }); }
+      else { if(!S.picked[g.key]) S.picked[g.key]=o.ids[0];
+             applyGroup(g, S.picked[g.key], main===g.key); }
     });
-  }
-
-  Array.prototype.forEach.call(b.querySelectorAll("[data-p]"), function (x) {
-    x.onclick = function (ev) { ev.stopPropagation(); play(parseInt(x.dataset.p, 10)); };
-  });
-  Object.keys(S.open).forEach(function (k) {
-    if (S.open[k]) setTimeout(function () { play(parseInt(k, 10)); }, 140);
-  });
-  Array.prototype.forEach.call(b.querySelectorAll("[data-c]"), function (x) {
-    x.onclick = function (ev) {
-      ev.stopPropagation();
-      var a = anns[parseInt(x.dataset.c, 10)];
-      navigator.clipboard.writeText(promptOne(a, fr.name)).then(function () {
-        x.textContent = "Copied";
-        setTimeout(function () { x.textContent = "Copy prompt for this element"; }, 1200);
-      }).catch(function () {});
-    };
-  });
-  Array.prototype.forEach.call(b.querySelectorAll("[data-f]"), function (x) {
-    x.onclick = function () { S.frameIdx = parseInt(x.dataset.f, 10); S.open = {}; render(); };
-  });
-  Array.prototype.forEach.call(b.querySelectorAll("[data-o]"), function (x) {
-    x.onclick = function () { var i = x.dataset.o; S.open[i] = !S.open[i]; render(); };
-  });
-
-  f.innerHTML = '<button id="bk">Back</button><button class="primary" style="flex:1" id="cp">Place on canvas</button>';
-  $("bk").onclick = function () { S.view = "stage"; render(); };
-  $("cp").onclick = function () {
-    post({ type: "annotate", job: {
-      frameId: fr.id, stage: S.stage, lead: !!st.lead,
-      items: anns.map(function (a) {
-        return {
-          element: a.el.n,
-          pattern: a.lib ? ("Use " + a.lib.icon) : a.p.name,
-          detail: a.lib ? a.lib.note : a.p.plain,
-          tokens: a.p.tokens.length ? a.p.tokens.join("  ·  ") : ""
-        };
-      })
-    }});
-    $("cp").textContent = "Placing…";
+    $("all").textContent="…";
   };
 };
 
-/* ---- settings ---- */
-function maskKey(k) { return k ? k.slice(0, 7) + "..." + k.slice(-4) : ""; }
+V.opts = function(b,f){
+  var stage=S.dx.stage, st=STAGES[stage];
+  var gs=E.groups(S.frame), g=gs[S.gi], o=E.optionsFor(g,stage);
+  var main=E.mainMotionOf(S.frame,stage), isMain = main===g.key;
+  $("ttl").textContent=esc(g.label); $("stp").textContent=esc(st.label);
 
-V.settings = function (b, f) {
-  $("ttl").textContent = "Settings"; $("stp").textContent = "";
-  var has = !!S.apiKey;
-  b.innerHTML =
-    '<h3>Claude API key</h3>'
-    + '<p class="lede">Optional. With a key, frames are matched to stages by Claude. '
-    + 'Without one, they are matched by name.</p>'
-    + (has
-      ? '<div class="flag good"><b>Key saved</b><code>' + esc(maskKey(S.apiKey)) + '</code></div>'
-      : '<div class="flag neutral"><b>No key saved</b>Name matching is on. Everything works, '
-        + 'but repeated or generic frame names get guessed.</div>')
-    + '<p class="q" style="margin-top:12px">' + (has ? 'Replace key' : 'Paste your key') + '</p>'
-    + '<input id="kf" type="password" placeholder="sk-ant-..." value="' + esc(S.keyDraft) + '" '
-    + 'class="keyfield" autocomplete="off">'
-    + '<div style="display:flex;gap:5px;margin-top:6px">'
-    + '<button id="sv" style="flex:1"' + (S.keyDraft ? '' : ' disabled') + '>Save and test</button>'
-    + (has ? '<button id="rm">Remove</button>' : '') + '</div>'
-    + (S.testing ? '<p class="note" style="margin-top:8px"><span class="spin"></span> Testing the key…</p>' : '')
-    + (S.keyStatus && !S.testing
-        ? '<div class="flag ' + (S.keyStatus.ok ? 'good' : 'bad') + '" style="margin-top:8px">'
-          + esc(S.keyStatus.msg) + '</div>' : '')
-    + '<div class="sec">Where to get one</div>'
-    + '<ol class="steps"><li>Sign in at platform.claude.com</li>'
-    + '<li>Open API keys from the menu under your organisation name</li>'
-    + '<li>Create key, then copy it. It is only shown once.</li></ol>'
-    + '<p class="note" style="margin-top:8px">Separate from a Claude.ai subscription. '
-    + 'New accounts get free credits, enough for a few thousand mappings. Uses '
-    + esc(window.CLAUDE.model) + ', the cheapest tier.</p>'
-    + '<div class="sec">Where it is stored</div>'
-    + '<p class="note">Saved to this machine only, using Figma client storage. Never written into the '
-    + 'plugin file and never shared with anyone else who installs it. Only frame names and stage names '
-    + 'are sent to the API. Frame contents are not.</p>';
+  if(o.lib){
+    b.innerHTML='<div class="libcard"><div class="ico"><span class="iconpv" id="ip-lib">'
+      +(g.el.svg||"")+'</span></div>'
+      +'<div class="t"><b>'+esc(o.lib.name)+'</b><br><code>'+esc(o.lib.key)+'</code></div></div>'
+      +'<div class="flag lib"><b>This Already Exists In The Qi Library</b>'+esc(o.lib.note)
+      +' Insert the component instead of building it by hand. It carries its own motion, '
+      +'so it stays in step if the library changes.</div>'
+      +'<p class="note">Nothing to choose here. The library made the decision.</p>';
+    if($("ip-lib")) setTimeout(function(){ drawIcon("ip-lib"); },150);
+    f.innerHTML='<button id="bk">Back</button><button class="primary" style="flex:1" id="ins">Insert Component</button>';
+    $("bk").onclick=function(){ S.view="els"; render(); };
+    $("ins").onclick=function(){
+      post({ type:"insert-icon", job:{ groupKey:g.key, key:o.lib.key, nodeIds:[g.el.id] } });
+      $("ins").textContent="…"; };
+    return;
+  }
 
-  var kf = $("kf");
-  kf.oninput = function () { S.keyDraft = kf.value; S.keyStatus = null; render(); };
-  if ($("sv")) $("sv").onclick = function () {
-    S.testing = true; render();
-    var k = S.keyDraft.trim();
-    window.CLAUDE.testKey(k).then(function (r) {
-      S.keyStatus = r; S.testing = false;
-      if (r.ok) { S.apiKey = k; S.keyDraft = ""; post({ type: "save-key", key: k }); }
-      render();
-    });
-  };
-  if ($("rm")) $("rm").onclick = function () {
-    S.apiKey = ""; S.keyStatus = null; post({ type: "save-key", key: "" }); render();
-  };
+  var ids=o.ids, cur=S.picked[g.key]||ids[0], isIcon=o.icon;
+  if(!ids.length){
+    b.innerHTML='<p class="lede">No motion fits this element at this stage.</p>';
+    f.innerHTML='<button style="flex:1" id="bk">Back</button>';
+    $("bk").onclick=function(){ S.view="els"; render(); }; return;
+  }
 
-  f.innerHTML = '<button style="flex:1" id="bk">Done</button>';
-  $("bk").onclick = function () { S.view = S.prevView || "setup"; render(); };
+  b.innerHTML=
+    (isMain
+      ? '<div class="flag main"><b>This Is The Main Motion</b>It is the one thing that stands out '
+        +'on this frame, so it can take the strongest option.</div>'
+      : main
+        ? '<p class="note" style="margin-bottom:10px">'
+          +esc(gs.filter(function(x){return x.key===main;})[0].label)
+          +' is the main motion on this frame, so these options all stay supporting.</p>'
+        : '')
+    +'<p class="lede">'+ids.length+' option'+(ids.length>1?'s':'')+' that fit '
+    +esc(st.label).toLowerCase()+'. All of them are valid here.</p>'
+    +(isIcon?'<p class="note" style="margin:-6px 0 12px">'+esc(ICON_RULE)+'</p>':'')
+    +ids.map(function(id,i){
+      var p=E.motionOf(id), on=cur===id;
+      return '<div class="opt'+(on?' on':'')+'" data-o="'+id+'">'
+        +'<div class="opt-h"><span class="nm">'+esc(p.name)+'</span>'
+        +(i===0?'<span class="pill">Suggested</span>':'')+'</div>'
+        +'<div class="opt-s">'+esc(p.plain)+'</div>'
+        +'<div class="pv" id="pv-'+id+'">'+pvDom(id,g)+'</div>'
+        +(on?'<div class="opt-b">'
+          + volBar(p,o.target,st.label)
+          + '<div class="sec" style="margin-top:12px">The Four Dials</div>'
+          + Object.keys(p.dials).map(function(k){
+              return '<div class="kv"><span style="color:var(--ink-3)">'+esc(k)+'</span>'
+                +'<span style="text-align:right">'+esc(p.dials[k])+'</span></div>'; }).join("")
+          + '<div class="sec">Tokens</div>'
+          + p.tokens.map(function(t){
+              return '<div class="kv"><code>'+esc(t)+'</code><span>'+tokVal(t)+'</span></div>'; }).join("")
+          + (p.qi?'<p class="note" style="margin-top:7px">Matches the Qi <code>'+esc(p.qi)
+              +'</code> transition.</p>':'')
+          + '<div class="sec">Motion Principles</div>'
+          + (isIcon?'<p class="note" style="margin:-2px 0 8px">Natural carries the most weight for an icon.</p>':'')
+          + TESTS.map(function(t){
+              var val=(p.tests||{})[t.k];
+              return '<p style="font-size:10px;line-height:1.55;margin-bottom:6px;color:'
+                +(val?'var(--ink-2)':'var(--ink-3)')+'"><b style="color:var(--ink)">'+t.l+'</b> '
+                +'<span style="color:var(--ink-3)">'+t.p+'</span><br>'+esc(val||t.n)+'</p>'; }).join("")
+          + '<textarea readonly id="ta">'+esc(E.promptFor(id,g,S.frame.name,isMain))+'</textarea>'
+          + '<button style="width:100%;margin-top:7px" id="cp">Copy Prompt</button></div>':'')
+        +'</div>'; }).join("");
+
+  ids.forEach(function(id){ playPv(id,g); });
+  Array.prototype.forEach.call(b.querySelectorAll("[data-o]"),function(x){
+    x.onclick=function(){ S.picked[g.key]=x.dataset.o; render(); };});
+  if($("cp")) $("cp").onclick=function(ev){ ev.stopPropagation();
+    navigator.clipboard.writeText($("ta").value).then(function(){
+      $("cp").textContent="Copied"; setTimeout(function(){ $("cp").textContent="Copy Prompt"; },1200);
+    }).catch(function(){}); };
+
+  f.innerHTML='<button id="bk">Back</button><button class="primary" style="flex:1" id="ok">Apply '
+    +esc(E.motionOf(cur).name)+'</button>';
+  $("bk").onclick=function(){ S.view="els"; render(); };
+  $("ok").onclick=function(){ S.picked[g.key]=cur; applyGroup(g,cur,isMain);
+    $("ok").textContent="…"; setTimeout(function(){ S.view="els"; render(); },500); };
+};
+
+/* --------------------------------------------------------------- preview */
+function pvDom(id,g){
+  if(VERBS[id]) return '<span class="iconpv" id="ip-'+id+'">'+(g.el.svg||"")+'</span>';
+  var p=PAT[id], n=(p.kind==="list"||p.kind==="leaving")?4:1, out="";
+  for(var i=0;i<n;i++) out+='<div class="'+(n>1?"bar":"sq")+'"></div>';
+  return out;
+}
+function drawIcon(wrapId){
+  var w=$(wrapId); if(!w) return;
+  var svg=w.querySelector("svg"); if(!svg) return;
+  [].slice.call(svg.querySelectorAll("path")).forEach(function(el,i){
+    var len=el.getTotalLength?el.getTotalLength():120;
+    el.style.transition="none"; el.style.strokeDasharray=len; el.style.strokeDashoffset=len;
+    void el.getBoundingClientRect();
+    setTimeout(function(){ el.style.transition="stroke-dashoffset 300ms cubic-bezier(0,0,.58,1)";
+      el.style.strokeDashoffset=0; }, i*120+80);
+  });
+  setTimeout(function(){ drawIcon(wrapId); },2600);
+}
+function playPv(id,g){
+  if(VERBS[id]) return playVerb(id);
+  var box=$("pv-"+id); if(!box) return;
+  var p=PAT[id], d=Math.min(p.ms,900), c=EAS[p.e].c, gap=p.st||0;
+  Array.prototype.forEach.call(box.children,function(el,k){
+    el.style.transition="none";
+    if(id==="settle"){ el.style.transform="scale(.92)"; el.style.opacity="1"; }
+    else if(id==="quiet-fade"||id==="surface-fade"||id==="progressive-reveal"){ el.style.transform="none"; el.style.opacity="0"; }
+    else if(id==="sheet-rise"){ el.style.transform="translateY(40px)"; el.style.opacity="1"; }
+    else if(id==="single-rise"){ el.style.transform="translateY(16px)"; el.style.opacity="0"; }
+    else if(id==="tap-response"){ el.style.transform="scale(.97)"; el.style.opacity="1"; }
+    else if(id==="ambient-loop"){ el.style.transform="none"; el.style.opacity=".3"; }
+    else if(id==="dim"||id==="recede"){ el.style.transform="none"; el.style.opacity="1"; }
+    else { el.style.transform="translateY(12px)"; el.style.opacity="0"; }
+    void el.offsetWidth;
+    setTimeout(function(){
+      el.style.transition="transform "+d+"ms "+c+", opacity "+d+"ms "+c;
+      if(id==="recede"){ el.style.transform="translateY(8px)"; el.style.opacity=".4"; }
+      else if(id==="dim"){ el.style.opacity=".4"; }
+      else if(id==="settle"){ el.style.transform="scale(1.04)";
+        setTimeout(function(){ el.style.transform="none"; }, d*0.55); }
+      else { el.style.transform="none"; el.style.opacity="1"; }
+    }, k*(gap||30)+80);
+  });
+  setTimeout(function(){ playPv(id,g); },2800);
+}
+function playVerb(id){
+  var wrap=$("ip-"+id); if(!wrap) return;
+  var vb=VERBS[id], svg=wrap.querySelector("svg"); if(!svg) return;
+  var d=Math.min(vb.ms,900), c=EAS[vb.e].c;
+  var paths=[].slice.call(svg.querySelectorAll("path,circle,rect,line,polyline"));
+  svg.style.transition="none"; svg.style.transform="none"; svg.style.opacity="1"; svg.style.clipPath="none";
+  paths.forEach(function(el){ el.style.transition="none"; el.style.strokeDasharray=""; el.style.strokeDashoffset=""; });
+
+  if(id==="draw"){
+    paths.forEach(function(el,i){
+      var len=el.getTotalLength?el.getTotalLength():120;
+      el.style.strokeDasharray=len; el.style.strokeDashoffset=len;
+      void el.getBoundingClientRect();
+      setTimeout(function(){ el.style.transition="stroke-dashoffset "+d+"ms "+c;
+        el.style.strokeDashoffset=0; }, i*90+80); });
+  } else if(id==="reveal"){
+    svg.style.clipPath="inset(0 100% 0 0)"; void svg.getBoundingClientRect();
+    setTimeout(function(){ svg.style.transition="clip-path "+d+"ms "+c; svg.style.clipPath="inset(0 0 0 0)"; },80);
+  } else if(id==="rotate"){
+    svg.style.transform="rotate(-30deg)"; void svg.getBoundingClientRect();
+    setTimeout(function(){ svg.style.transition="transform "+d+"ms "+c; svg.style.transform="rotate(0deg)"; },80);
+  } else if(id==="pop"){
+    svg.style.transform="scale(.82)"; void svg.getBoundingClientRect();
+    setTimeout(function(){ svg.style.transition="transform "+d+"ms "+c; svg.style.transform="scale(1)"; },80);
+  } else if(id==="drift"){
+    svg.style.transform="translateY(8px)"; svg.style.opacity="0"; void svg.getBoundingClientRect();
+    setTimeout(function(){ svg.style.transition="transform "+d+"ms "+c+", opacity "+d+"ms "+c;
+      svg.style.transform="none"; svg.style.opacity="1"; },80);
+  } else if(id==="swap"){
+    svg.style.opacity="1"; void svg.getBoundingClientRect();
+    setTimeout(function(){ svg.style.transition="opacity "+d+"ms "+c; svg.style.opacity=".25";
+      setTimeout(function(){ svg.style.opacity="1"; }, d); },80);
+  } else if(id==="pulse"){
+    svg.style.transform="scale(1)"; void svg.getBoundingClientRect();
+    setTimeout(function(){ svg.style.transition="transform 1100ms linear"; svg.style.transform="scale(1.06)";
+      setTimeout(function(){ svg.style.transform="scale(1)"; },1100); },80);
+  } else if(id==="sheen"){
+    svg.style.opacity=".3"; void svg.getBoundingClientRect();
+    setTimeout(function(){ svg.style.transition="opacity 1100ms linear"; svg.style.opacity="1";
+      setTimeout(function(){ svg.style.opacity=".3"; },1100); },80);
+  } else {
+    svg.style.opacity="0"; void svg.getBoundingClientRect();
+    setTimeout(function(){ svg.style.transition="opacity "+d+"ms "+c; svg.style.opacity="1"; },80);
+  }
+  setTimeout(function(){ playVerb(id); },2800);
+}
+
+/* -------------------------------------------------------------- settings */
+function maskKey(k){ return k ? k.slice(0,7)+"..."+k.slice(-4) : ""; }
+
+V.settings = function(b,f){
+  $("ttl").textContent="Settings"; $("stp").textContent="";
+  var has=!!S.apiKey;
+  b.innerHTML=
+    '<h3>Claude API Key</h3>'
+    +'<p class="lede">Optional. With a key, Claude is asked to read a frame when the rules are '
+    +'unsure, and to suggest icon motion. Without one, everything still works from the rules.</p>'
+    +(has ? '<div class="flag lib"><b>Key Saved</b><code>'+esc(maskKey(S.apiKey))+'</code></div>'
+          : '<div class="flag neutral"><b>No Key Saved</b>Running on rules only.</div>')
+    +'<p class="q" style="margin-top:12px">'+(has?'Replace key':'Paste your key')+'</p>'
+    +'<input id="kf" type="password" placeholder="sk-ant-..." value="'+esc(S.keyDraft)+'" '
+    +'class="keyfield" autocomplete="off">'
+    +'<div style="display:flex;gap:5px;margin-top:6px">'
+    +'<button id="sv" style="flex:1"'+(S.keyDraft?'':' disabled')+'>Save and test</button>'
+    +(has?'<button id="rm">Remove</button>':'')+'</div>'
+    +(S.testing?'<p class="note" style="margin-top:8px"><span class="spin"></span> Testing the key…</p>':'')
+    +(S.keyStatus&&!S.testing
+      ? '<div class="flag '+(S.keyStatus.ok?'lib':'warn')+'" style="margin-top:8px">'
+        +esc(S.keyStatus.msg)+'</div>':'')
+    +'<div class="sec">Where To Get One</div>'
+    +'<ol class="steps"><li>Sign in at platform.claude.com</li>'
+    +'<li>Open API keys from the menu under your organisation name</li>'
+    +'<li>Create key, then copy it. It is only shown once.</li></ol>'
+    +'<p class="note" style="margin-top:8px">Separate from a Claude.ai subscription. New accounts get '
+    +'free credits, enough for a few thousand reads. Uses '+esc(window.CLAUDE.model)+', the cheapest tier.</p>'
+    +'<div class="sec">What Is Sent</div>'
+    +'<p class="note">Stage names, layer names and sizes, and for icons the exported outline. '
+    +'Never text content, images, or anything outside the selected frame. The key is stored on this '
+    +'machine only and is never written into the plugin files.</p>';
+
+  var kf=$("kf");
+  kf.oninput=function(){ S.keyDraft=kf.value; S.keyStatus=null; render(); };
+  if($("sv")) $("sv").onclick=function(){
+    S.testing=true; render();
+    var k=S.keyDraft.trim();
+    window.CLAUDE.testKey(k).then(function(r){
+      S.keyStatus=r; S.testing=false;
+      if(r.ok){ S.apiKey=k; S.keyDraft=""; post({ type:"save-key", key:k }); }
+      render(); }); };
+  if($("rm")) $("rm").onclick=function(){
+    S.apiKey=""; S.keyStatus=null; post({ type:"save-key", key:"" }); render(); };
+
+  f.innerHTML='<button style="flex:1" id="bk">Done</button>';
+  $("bk").onclick=function(){ S.view=S.prevView||"empty"; render(); };
 };
 
 render();
-post({ type: "ready" });
+post({ type:"ready" });
 
 })();
 

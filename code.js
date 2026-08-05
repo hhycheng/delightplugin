@@ -1,114 +1,130 @@
 // code.js — runs in the Figma sandbox. No network access here.
-// Talks to ui.html by postMessage only.
+// Reads the selection, exports icon geometry, and writes Motion keyframes.
 
-figma.showUI(__html__, { width: 340, height: 640, themeColors: true });
+figma.showUI(__html__, { width: 360, height: 660, themeColors: true });
 
-var CURRENCY = /(HK\$|US\$|SGD|RMB|\$|USD|HKD)\s?[\d,]|\b\d{1,3}(,\d{3})+(\.\d{2})?\b/;
-var MONEY_NAME = /amount|payout|total|premium|price|cost|balance|sum|fee/i;
+var muteSelection = false;
 
-// ---------------------------------------------------------------- read frames
+// ------------------------------------------------------------ read a frame
 
-function topFrames() {
-  var sel = figma.currentPage.selection;
-  var out = [];
-  sel.forEach(function (node) {
-    if (node.type === "SECTION" || node.type === "GROUP") {
-      node.children.forEach(function (c) {
-        if (c.type === "FRAME" || c.type === "COMPONENT") out.push(c);
-      });
-    } else if (node.type === "FRAME" || node.type === "COMPONENT") {
-      out.push(node);
-    }
-  });
-  return out;
-}
-
-// Rough element type from the node, its name, and its shape.
 function classify(node) {
   var n = node.name.toLowerCase();
-  if (/button|cta|btn|submit|confirm|next|book now/.test(n)) return "button";
+  if (/button|cta|btn|submit|confirm|next|book now|done/.test(n)) return "button";
   if (node.type === "TEXT") return "text";
-  if (/icon|ic-|check|tick|spinner|loader|star|sparkle/.test(n)) return "icon";
   if (node.type === "VECTOR" || node.type === "BOOLEAN_OPERATION") return "icon";
+  if (/icon|ic-|check|tick|spinner|loader|star|sparkle|lock|shield|bell/.test(n)) return "icon";
   if (/image|photo|avatar|thumbnail|map|banner/.test(n)) return "image";
   if (/row|item|cell|list item|card/.test(n)) return "row";
   if (/chip|tag|pill|prompt/.test(n)) return "chip";
   return "container";
 }
 
-// Strip trailing numbers so "Row 1" and "Row 2" count as the same thing.
 function stem(name) {
   return name.toLowerCase().replace(/[\s_-]*\d+$/, "").trim();
 }
 
-function flagsFor(node, type, textSample) {
+function flagsFor(node, type) {
   var n = node.name.toLowerCase();
   return {
-    tap: type === "button",
-    money: (type === "text") && (MONEY_NAME.test(n) || CURRENCY.test(textSample || "")),
-    loading: /spinner|loader|loading|progress|thinking|sheen|pulse/.test(n),
+    tap:       type === "button",
+    loading:   /spinner|loader|loading|progress|thinking|sheen|pulse/.test(n),
     streaming: /response|answer|message|typing|stream/.test(n),
     completes: /check|tick|success|done|complete/.test(n),
-    leaves: /completed|past|previous|dismiss|old/.test(n),
-    confirms: /thumbnail|attachment|upload|receipt|preview/.test(n),
-    late: /follow|feedback|next step|helpful|rate/.test(n)
+    leaves:    /completed|past|previous|dismiss|old/.test(n),
+    confirms:  /thumbnail|attachment|upload|receipt|preview/.test(n),
+    late:      /follow|feedback|next step|helpful|rate|track/.test(n),
+    secondState: false      // set when the designer picks a second icon
   };
 }
 
-// Direct children only. Going deeper produces noise, not insight.
-function readElements(frame) {
-  var kids = ("children" in frame) ? frame.children : [];
+// Icons get their geometry exported so the panel can preview the real thing,
+// and so "draw" can be validated against an actual stroked path.
+async function svgFor(node) {
+  try {
+    var s = await node.exportAsync({ format: "SVG_STRING" });
+    return s.length > 20000 ? "" : s;
+  } catch (e) { return ""; }
+}
+
+async function readFrame(frame) {
+  var kids = ("children" in frame) ? frame.children.filter(function (k) { return k.visible !== false; }) : [];
   var counts = {};
-  kids.forEach(function (k) {
-    var s = stem(k.name);
-    counts[s] = (counts[s] || 0) + 1;
-  });
+  kids.forEach(function (k) { var s = stem(k.name); counts[s] = (counts[s] || 0) + 1; });
 
-  return kids
-    .filter(function (k) { return k.visible !== false; })
-    .map(function (k) {
-      var type = classify(k);
-      var sample = (k.type === "TEXT" && typeof k.characters === "string")
-        ? k.characters.slice(0, 60) : "";
-      return {
-        id: k.id,
-        n: k.name,
-        t: type,
-        w: Math.round("width" in k ? k.width : 0),
-        h: Math.round("height" in k ? k.height : 0),
-        sib: counts[stem(k.name)] || 1,
-        flags: flagsFor(k, type, sample)
-      };
+  var els = [];
+  for (var i = 0; i < kids.length; i++) {
+    var k = kids[i], type = classify(k);
+    els.push({
+      id: k.id,
+      n: k.name,
+      t: type,
+      w: Math.round("width" in k ? k.width : 0),
+      h: Math.round("height" in k ? k.height : 0),
+      sib: counts[stem(k.name)] || 1,
+      f: flagsFor(k, type),
+      svg: type === "icon" ? await svgFor(k) : ""
     });
+  }
+  return { id: frame.id, name: frame.name, w: Math.round(frame.width), h: Math.round(frame.height), els: els };
 }
 
-function sendSelection() {
-  var frames = topFrames();
-  var seen = {};
-  var payload = frames.map(function (f, i) {
-    var dup = seen[f.name] = (seen[f.name] || 0) + 1;
-    return {
-      id: f.id,
-      name: f.name,
-      order: i,
-      duplicate: dup > 1,     // ui uses this to disambiguate by position
-      w: Math.round(f.width),
-      h: Math.round(f.height),
-      els: readElements(f)
-    };
+async function sendSelection() {
+  var sel = figma.currentPage.selection.filter(function (n) {
+    return n.type === "FRAME" || n.type === "COMPONENT" || n.type === "INSTANCE";
   });
-  figma.ui.postMessage({ type: "selection", frames: payload });
+  if (!sel.length) { figma.ui.postMessage({ type: "frame", frame: null }); return; }
+  var frame = await readFrame(sel[0]);
+  figma.ui.postMessage({ type: "frame", frame: frame, extra: sel.length - 1 });
 }
 
-var muteSelection = false;
-figma.on("selectionchange", function () {
-  if (muteSelection) return;   // our own annotation placement, not a user action
-  sendSelection();
-});
+figma.on("selectionchange", function () { if (!muteSelection) sendSelection(); });
 
-// ---------------------------------------------------------------- annotations
+// ------------------------------------------------- write Motion keyframes
 
-var LABEL_W = 260;
+function easingFor(spec) {
+  if (!spec || spec.type === "LINEAR") return { type: "LINEAR" };
+  return { type: "CUSTOM_CUBIC_BEZIER", easingFunctionCubicBezier: spec.easingFunctionCubicBezier };
+}
+
+/* The Motion API is in beta. If anything here is unavailable, fall back to
+   writing the spec as a text annotation so the designer still gets the values. */
+async function applyMotion(job) {
+  var targets = [];
+  for (var i = 0; i < job.nodeIds.length; i++) {
+    var n = await figma.getNodeByIdAsync(job.nodeIds[i]);
+    if (n) targets.push(n);
+  }
+  if (!targets.length) throw new Error("that layer is no longer in the file");
+
+  var k = job.kf;
+  for (var j = 0; j < targets.length; j++) {
+    var node = targets[j];
+    var offset = (k.stagger || 0) * j;
+    node.applyManualKeyframeTrack(
+      { type: "PROPERTY", name: k.track },
+      {
+        baseValue: { type: "FLOAT", value: k.keyframes[0].value },
+        keyframes: k.keyframes.map(function (f) {
+          var kf = {
+            timelinePosition: f.timelinePosition + offset,
+            value: { type: "FLOAT", value: f.value }
+          };
+          if (f.easing) kf.easing = easingFor(f.easing);
+          return kf;
+        })
+      }
+    );
+    var timelines = node.timelines;
+    if (timelines && timelines[0]) {
+      node.setTimelineDuration(timelines[0].id, Math.max(1, k.durationSeconds + offset + 0.2));
+    }
+  }
+  return targets.length;
+}
+
+// ----------------------------------------------------------- annotations
+
+var CARD_W = 250;
 
 async function annotate(job) {
   var FAM = "Inter", BOLD = "Semi Bold";
@@ -122,11 +138,11 @@ async function annotate(job) {
   }
 
   var frame = await figma.getNodeByIdAsync(job.frameId);
-  if (!frame) { figma.notify("That frame is gone."); return; }
+  if (!frame) throw new Error("that frame is no longer in the file");
 
   var card = figma.createFrame();
+  card.resize(CARD_W, 100);
   card.name = "Delight Motion — " + frame.name;
-  card.resize(LABEL_W, 100);
   card.layoutMode = "VERTICAL";
   card.counterAxisSizingMode = "FIXED";
   card.primaryAxisSizingMode = "AUTO";
@@ -139,8 +155,11 @@ async function annotate(job) {
   card.y = frame.y;
 
   function line(text, size, bold, grey) {
-    if (!text) { var sp = figma.createFrame(); sp.resize(LABEL_W - 28, 6);
-      sp.fills = []; sp.layoutAlign = "STRETCH"; card.appendChild(sp); return sp; }
+    if (!text) {
+      var sp = figma.createFrame();
+      sp.resize(CARD_W - 28, 4); sp.fills = []; sp.layoutAlign = "STRETCH";
+      card.appendChild(sp); return;
+    }
     var t = figma.createText();
     t.fontName = { family: FAM, style: bold ? BOLD : "Regular" };
     t.characters = text;
@@ -150,28 +169,43 @@ async function annotate(job) {
     t.textAutoResize = "HEIGHT";
     if (grey) t.fills = [{ type: "SOLID", color: { r: .45, g: .45, b: .45 } }];
     card.appendChild(t);
-    return t;
   }
 
-  line(job.stage + (job.lead ? "  ·  loudest in journey" : ""), 10, false, true);
+  line(job.stage + (job.main ? "  ·  main motion: " + job.main : ""), 10, false, true);
   line(frame.name, 14, true, false);
-
   job.items.forEach(function (it) {
     line("", 0, false, false);
-    line(it.element + "  —  " + it.pattern, 11, true, false);
+    line(it.element + "  —  " + it.motion, 11, true, false);
     line(it.detail, 10, false, true);
     if (it.tokens) line(it.tokens, 9, false, true);
   });
 
-  var parent = frame.parent || figma.currentPage;
   muteSelection = true;
-  parent.appendChild(card);
+  (frame.parent || figma.currentPage).appendChild(card);
   figma.viewport.scrollAndZoomIntoView([frame, card]);
   setTimeout(function () { muteSelection = false; }, 400);
-  figma.notify("Annotations placed next to " + frame.name);
 }
 
-// ---------------------------------------------------------------- key storage
+// --------------------------------------------------------- library icons
+
+async function insertLibraryIcon(job) {
+  var comp = await figma.importComponentByKeyAsync(job.key);
+  var target = await figma.getNodeByIdAsync(job.nodeIds[0]);
+  var inst = comp.createInstance();
+  if (target && target.parent) {
+    inst.x = target.x; inst.y = target.y;
+    if ("resize" in inst && target.width) inst.resize(target.width, target.height);
+    muteSelection = true;
+    target.parent.insertChild(target.parent.children.indexOf(target), inst);
+    target.remove();
+    setTimeout(function () { muteSelection = false; }, 400);
+  } else {
+    figma.currentPage.appendChild(inst);
+  }
+  return inst.name;
+}
+
+// -------------------------------------------------------------- messages
 
 figma.ui.onmessage = async function (msg) {
   if (msg.type === "ready") {
@@ -179,21 +213,52 @@ figma.ui.onmessage = async function (msg) {
     figma.ui.postMessage({ type: "key", key: key || "" });
     sendSelection();
   }
+
   if (msg.type === "save-key") {
     await figma.clientStorage.setAsync("anthropic_key", msg.key || "");
   }
-  if (msg.type === "annotate") {
+
+  if (msg.type === "apply") {
+    var wrote = 0, viaMotion = true;
     try {
-      await annotate(msg.job);
-      figma.ui.postMessage({ type: "annotated", ok: true });
+      wrote = await applyMotion(msg.job);
+      figma.notify("Applied to " + wrote + " layer" + (wrote > 1 ? "s" : ""));
     } catch (e) {
-      figma.notify("Could not place annotations: " + e.message);
-      figma.ui.postMessage({ type: "annotated", ok: false, msg: e.message });
+      viaMotion = false;
+      try {
+        await annotate(msg.job.annotation);
+        figma.notify("Motion API unavailable, so the spec was placed as a note instead");
+      } catch (e2) {
+        figma.ui.postMessage({ type: "applied", ok: false, msg: e2.message });
+        figma.notify("Could not apply: " + e2.message);
+        return;
+      }
+    }
+    figma.ui.postMessage({ type: "applied", ok: true, key: msg.job.groupKey, viaMotion: viaMotion });
+  }
+
+  if (msg.type === "insert-icon") {
+    try {
+      await insertLibraryIcon(msg.job);
+      figma.ui.postMessage({ type: "applied", ok: true, key: msg.job.groupKey, viaMotion: true });
+      figma.notify("Inserted the animated component");
+    } catch (e) {
+      figma.ui.postMessage({ type: "applied", ok: false, msg: e.message });
+      figma.notify("Could not insert: check the component key in src/data/icons.js");
     }
   }
+
+  if (msg.type === "annotate") {
+    try { await annotate(msg.job); figma.notify("Spec placed beside the frame"); }
+    catch (e) { figma.notify("Could not place the note: " + e.message); }
+  }
+
   if (msg.type === "focus" && msg.id) {
     var n = await figma.getNodeByIdAsync(msg.id);
-    if (n) { figma.currentPage.selection = [n]; figma.viewport.scrollAndZoomIntoView([n]); }
+    if (n) { muteSelection = true; figma.currentPage.selection = [n];
+      figma.viewport.scrollAndZoomIntoView([n]);
+      setTimeout(function () { muteSelection = false; }, 400); }
   }
+
   if (msg.type === "close") figma.closePlugin();
 };

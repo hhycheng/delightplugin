@@ -8,6 +8,6 @@
   "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": ["https://api.anthropic.com"],
-    "reasoning": "Optional. Sends frame names and stage names to Claude to suggest which journey stage each frame belongs to. No frame contents are sent."
+    "reasoning": "Optional. Sends stage names, layer names and sizes, and icon outlines to Claude when the rules are unsure. No text content or images leave the plugin."
   }
 }
